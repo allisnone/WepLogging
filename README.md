@@ -7,5 +7,5 @@ To collect windows endpoint logs including:
 5. Running time database: %promgramfiles%\SkyGuard\SkyGuard Endpoint\UCSCSDK\var\
 6. Spetial log or config file or dirs.
 
-all log will output to Desktop:
+All logs will output to Desktop:
 %userprofile%\desktop\Skyguard_ep_201901026_tar.gz
