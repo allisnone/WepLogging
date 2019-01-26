@@ -3,20 +3,19 @@
 import argparse
 import datetime
 import tarfile
+import time
 import os
 
 class WepLogCollection:
     """
     用于收集终端的日志
     """
-    def __init__(self, ep_version='v2.3.0',types='',out_put_dir=''):
+    def __init__(self, ep_version='v2.3.0',types='',out_put_dir='',debug=False,timer=300):
         self.ep_version = ep_version
         self.log_types = types
         self.out_put_dir = out_put_dir
-        self.agent_log_dir = ''
-        self.ucsc_sdk_log_dir = ''
-        self.app_hook_dir = ''
-        self.install_log = ''
+        self.sdk_debug = debug
+        self.timer = timer
         self.specify_files = ''
         self.valid_versions = ['v2.3.0', 'v2.2.0']
         self.log_dir_data = {}
@@ -39,7 +38,6 @@ class WepLogCollection:
         if version: 
             return version.lower() in list(self.all_version_datas.keys())
         return self.ep_version in list(self.all_version_datas.keys())
-    
     
     def set_log_types(self,types='',specify=''):
         """
@@ -105,11 +103,11 @@ class WepLogCollection:
         self.set_all_version_datas()  
         if self.is_valid_ep_version(version):
             log_dir_data = self.all_version_datas[self.ep_version]
-            print 'log_dir_data=',log_dir_data
+            #print 'log_dir_data=',log_dir_data
             if version:
                 log_dir_data = self.all_version_datas[self.ep_version]
             all_this_version_types = log_dir_data.keys()
-            print 'all_this_version_types=',all_this_version_types
+            #print 'all_this_version_types=',all_this_version_types
             
             if self.log_types=='default':
                 self.log_types = ['agent','sdk']
@@ -117,7 +115,7 @@ class WepLogCollection:
                 self.log_types = log_dir_data
             else:
                 pass
-            print self.log_types
+            #print self.log_types
             #print log_dir_data[self.log_types]
             except_logs_types = list(set(all_this_version_types).difference(self.log_types))
             if except_logs_types: #收集已定义日志类型中的一部分
@@ -138,17 +136,23 @@ class WepLogCollection:
         
     def tar_file(self):
         log_dir_data = self.get_version_data()
+        if self.sdk_debug:
+            level='DEBUG'
+            self.enable_sdk_debug(level='DEBUG')
+            if self.timer>0:
+                print '已开启sdk 日志模式%s, 将等待%秒后自动收集日志...' % (level,self.timer)
+                time.sleep(self.timer)
         if log_dir_data:
-            date_str = '20190126'
-            print os.environ 
-            print os.getenv('APPDATA')
-            print os.getenv('PROGRAMW6432')
-            print os.getenv('TEMP')
-            print os.getenv('USERPROFILE')
+            date_str = time.strftime('%Y%m%d%H%M',time.localtime(time.time()))
+            #print os.environ 
+            #print os.getenv('APPDATA')
+            #print os.getenv('PROGRAMW6432')
+            #print os.getenv('TEMP')
+            #print os.getenv('USERPROFILE')
             desktop_dir = os.path.join(os.path.expanduser("~"), 'Desktop')
             tar_file_name = 'skyguard_wep_'  + date_str + '.tar.gz'
             full_tar_file_name = os.path.join(desktop_dir,tar_file_name)
-            print 'full_tar_file_name=',full_tar_file_name
+            #print 'full_tar_file_name=',full_tar_file_name
             tar_obj = tarfile.open(full_tar_file_name,'w:gz')
             #获取字典中非空的数据
             log_dir_data = {k: v for k, v in log_dir_data.iteritems() if v}
@@ -157,13 +161,13 @@ class WepLogCollection:
             #print log_dirs
             profix_dirs = ['PROGRAMW6432_','APPDATA_','TEMP_']
             for dir in log_dirs:
-                print dir
+                #print dir
                 for profix in profix_dirs:
                     if profix in dir:
                         dirs = dir.split('_')
-                        print 'dirs=',dirs
+                        #print 'dirs=',dirs
                         this_dir = os.path.join(os.getenv(dirs[0]),dirs[1])
-                        print 'this_dir=',this_dir
+                        #print 'this_dir=',this_dir
                         if this_dir and os.path.exists(this_dir):
                             tar_obj.add(this_dir) 
                 else:
@@ -211,6 +215,6 @@ if __name__ == '__main__':
     desciption = desciption + addition
     print desciption
     print '---------------------End 使用说明 --------------------------------\n'
-    wep_log_obj = WepLogCollection(ep_version=version,types=log_type,out_put_dir='')
+    wep_log_obj = WepLogCollection(ep_version=version,types=log_type,out_put_dir='',debug=sdk_debug,timer=wait_seconds)
     wep_log_obj.tar_file()
     
