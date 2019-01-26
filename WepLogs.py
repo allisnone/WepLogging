@@ -140,7 +140,7 @@ class WepLogCollection:
             level='DEBUG'
             self.enable_sdk_debug(level='DEBUG')
             if self.timer>0:
-                print '已开启sdk 日志模式%s, 将等待%秒后自动收集日志...' % (level,self.timer)
+                print '已开启sdk 日志模式%s, 将等待%s秒后自动收集日志...' % (level,self.timer)
                 time.sleep(self.timer)
         if log_dir_data:
             date_str = time.strftime('%Y%m%d%H%M',time.localtime(time.time()))
@@ -195,7 +195,7 @@ if __name__ == '__main__':
     sdk_debug = args.sdk_debug
     wait_seconds = args.wait_seconds
     specify = args.specify
-    print '\n'
+    #print '\n'
     print '---------------------Start 使用说明 --------------------------------'
     print '1. 直接使用：python main.py' 
     print '2. 默认不加任何参数时，相当于（不做日期过滤）：python main.py --unit-size=10G --forensics=network'
@@ -210,6 +210,9 @@ if __name__ == '__main__':
     addition = ''
     if sdk_debug=='enable':
         addition = '\n 开启debug模式后延迟%s 秒收集日志。'% wait_seconds
+        sdk_debug = True
+    else:
+        sdk_debug = False
     if specify:
         addition = addition + '收集的指定目录或者文件： %s'% specify
     desciption = desciption + addition
