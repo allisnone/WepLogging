@@ -213,9 +213,9 @@ class WepLogCollection:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='manual to this script') 
     parser.add_argument('-v','--version', type=str, default = 'v2.3.0',help='指定需收集日志的终端的版本，格式如v2.3.0') 
-    parser.add_argument('-l','--log-types', type=str, default= 'default',help='指定收集终端日志的类型，有效类型：all, defualt, 或[agent,sdk,hook,install,specify]的任意组合-需以英文逗号分隔。')
-    parser.add_argument('-d','--debug', type=str, default='INFO',help='是否开启或者切换SDK的debug日志，有效类型为: INFO, DEBUG, TRACE，其他输入为无效，不改变sdk的日志模式。')
-    parser.add_argument('-t','--time', type=int, default=300,help='先切换SDK的日志模式，等待若干秒后，再收集日志；通常用于收集特定场景的日志。') 
+    parser.add_argument('-l','--log-types', type=str, default= 'default',help='收集终端模块的日志类型，有效类型：all（除specify以外的所有类型）, defualt（agent,sdk两种）, 或[agent,sdk,hook,install,specify]的任意组合-需以英文逗号分隔。')
+    parser.add_argument('-d','--debug', type=str, default='INFO',help='是否开启或者切换SDK日志level，有效level为: INFO, DEBUG, TRACE；其他输入为无效，不改变sdk的日志模式。')
+    parser.add_argument('-t','--time', type=int, default=300,help='先切换SDK的日志模式，等待若干秒后，再收集日志，与-d DEBUG（或TRACE）参数组合使用；通常用于收集特定场景的日志。') 
     parser.add_argument('-s','--specify', type=str, default='',help='收集指定目录或者指定文件，通常用于添加配置文件到压缩包。使用该参数时，log-types必须包含"specify"的日志类型') 
     args = parser.parse_args()
     version = args.version
@@ -231,7 +231,7 @@ if __name__ == '__main__':
     print('4. 可以开启DEBUG模式后300秒，再[agent, sdk]收集日志： python WepLogs.py -d DEBUG -t 300 ')
     print('\n')
     print('当前参数设置如下：')
-    desciption =  '终端版本：%s ，收集的日志包括：%s ，UCSC DEBUG模式：%s 。' % (version,log_type,sdk_debug)
+    desciption =  '终端版本：%s ，收集的日志包括：%s ，UCSC 日志level模式：%s 。' % (version,log_type,sdk_debug)
     addition = ''
     if sdk_debug in ['DEBUG','TRACE']:
         if wait_seconds>0:
