@@ -10,19 +10,28 @@ class WepLogCollection:
     """
     用于收集终端的日志
     """
-    def __init__(self, ep_version='v2.3.0',types='',out_put_dir='',debug=False,timer=300):
+    def __init__(self, ep_version='v2.3.0',types='',specify='',out_put_dir='',debug=False,timer=300):
         self.ep_version = ep_version
-        self.log_types = types
+        self.log_types = []
         self.out_put_dir = out_put_dir
         self.sdk_debug = debug
         self.timer = timer
-        self.specify_files = ''
+        self.specify = specify
         self.valid_versions = ['v2.3.0', 'v2.2.0']
         self.log_dir_data = {}
+        self.initial_dlp_logs(types,specify,debug)
         
-    def initial_datas(self):
-        self.set_all_version_datas()    
-        
+    def initial_dlp_logs(self,types,specify,debug):
+        self.set_log_types(types)
+        if self.log_types:
+            self.set_specify(specify) #设置特殊目录日志
+            self.set_all_version_datas()
+            self.tar_dlp_log_files(self.get_version_data())
+        else:
+            self.set_sdklog_level(debug)
+            self.restore_log_level()
+        return    
+    
     def get_agent_version(self): 
         return       
     
@@ -39,7 +48,16 @@ class WepLogCollection:
             return version.lower() in list(self.all_version_datas.keys())
         return self.ep_version in list(self.all_version_datas.keys())
     
-    def set_log_types(self,types='',specify=''):
+    def set_specify(self,specify=''):
+        if specify:
+            self.specify = specify
+        if 'specify' in self.log_types: #设置特殊目录日志
+                pass
+        else:
+            self.specify = ''
+        return
+    
+    def set_log_types(self,types=''):
         """
         设置要收集的日志类型，如果需要收集特殊日志或者配置文件，参数specify必须非空
         :parama types: str or list type
@@ -48,20 +66,15 @@ class WepLogCollection:
         if types:
             pass
         else:#默认只取agent和sdk的日志
-            #types = 'default'
-            if not self.log_types:
-                self.log_types = ['agent','sdk']
+            self.log_types = ['agent','sdk']
+            return 
         if isinstance(types,str): #一种类型
             if types in valid_log_types:
                 self.log_types = [type]
-                if types=='default': #默认只取agent和sdk的日志
-                    self.log_types = ['agent','sdk']
-                else:
-                    pass
             elif types=='default': #默认只取agent和sdk的日志
-                    self.log_types = ['agent','sdk']
+                self.log_types = ['agent','sdk']
             elif types=='all': #收取全部日志
-                    self.log_types = valid_log_types
+                self.log_types = valid_log_types
             else:
                 print('ERROR：输入无效的日志类型：%s' % types)
         elif isinstance(types, list): #给定多种类型，list 
@@ -72,8 +85,6 @@ class WepLogCollection:
             self.log_types = list(set(valid_log_types).intersection(set(types)))
         else:
             print('ERROR-输入其他无效的日志类型：%s，请确保数日str或者是list类型！' % type(types))
-        if specify and 'specify' in self.log_types: #设置特殊目录日志
-            self.specify = specify
         return
     
     def set_all_version_datas(self,datas={}):
@@ -99,33 +110,17 @@ class WepLogCollection:
             self.all_version_datas = datas
         return
             
-    def get_version_data(self,version=''):
-        self.set_all_version_datas()  
-        if self.is_valid_ep_version(version):
+    def get_version_data(self):
+        if self.is_valid_ep_version():
             log_dir_data = self.all_version_datas[self.ep_version]
-            #print 'log_dir_data=',log_dir_data
-            if version:
-                log_dir_data = self.all_version_datas[self.ep_version]
             all_this_version_types = list(log_dir_data.keys())
-            #print 'all_this_version_types=',all_this_version_types
-            
-            if self.log_types=='default':
-                self.log_types = ['agent','sdk']
-            elif self.log_types=='all':
-                self.log_types = log_dir_data
-            else:
-                pass
-            #print self.log_types
-            #print log_dir_data[self.log_types]
             except_logs_types = list(set(all_this_version_types).difference(self.log_types))
             if except_logs_types: #收集已定义日志类型中的一部分
-                for type in except_logs_types:
+                for type in except_logs_types: #如果在例外，则置空
                     log_dir_data[type] = ''
-                    #if type=='specify' and self.specify:
-                    #    log_dir_data['specify'] = self.specify
             else:#全部收集
                 pass
-            if 'specify' in self.log_types and self.specify:
+            if self.specify:
                 log_dir_data['specify'] = self.specify
             else:
                 pass
@@ -134,16 +129,17 @@ class WepLogCollection:
             print('ERROR：请设置正确的ep_version或更新all_version_datas！')
             return {} 
         
-    def tar_dlp_log_files(self):
+    def tar_dlp_log_files(self,log_dir_data):
         """
         根据参数设置sdk 日志level，并收集日志，打包压缩
         :return: 打包压缩的文件名
         """
         full_tar_dlp_log_files_name = ''
-        log_dir_data = self.get_version_data()
+        is_switch_sdk_log_level = False
         if self.sdk_debug in ['DEBUG', 'TRACE']:
             #DEBUG或者TRACE模式时，设置SDK 的log level
             self.set_sdklog_level()
+            is_switch_sdk_log_level = True
             if self.timer>0: #DEBUG或者Trace模式，同时时间大于0时，等待若干秒
                 print('已开启SDK日志模式: %s, 将等待%s秒后自动收集日志...' % (level,self.timer))
                 time.sleep(self.timer)
@@ -184,7 +180,8 @@ class WepLogCollection:
                     pass
             tar_obj.close()
             print('完成终端日志收集，日志输出目录为：%s' % full_tar_dlp_log_files_name)
-        self.restore_log_level()
+        if is_switch_sdk_log_level:
+            self.restore_log_level()
         return full_tar_dlp_log_files_name
     
     def set_sdklog_level(self,level=''):
