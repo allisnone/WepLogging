@@ -134,7 +134,12 @@ class WepLogCollection:
             print('ERROR：请设置正确的ep_version或更新all_version_datas！')
             return {} 
         
-    def tar_file(self):
+    def tar_dlp_log_files(self):
+        """
+        根据参数设置sdk 日志level，并收集日志，打包压缩
+        :return: 打包压缩的文件名
+        """
+        full_tar_dlp_log_files_name = ''
         log_dir_data = self.get_version_data()
         if self.sdk_debug in ['DEBUG', 'TRACE']:
             #DEBUG或者TRACE模式时，设置SDK 的log level
@@ -155,10 +160,10 @@ class WepLogCollection:
             #print os.getenv('TEMP')
             #print os.getenv('USERPROFILE')
             desktop_dir = os.path.join(os.path.expanduser("~"), 'Desktop')
-            tar_file_name = 'skyguard_wep_'  + date_str + '.tar.gz'
-            full_tar_file_name = os.path.join(desktop_dir,tar_file_name)
-            #print 'full_tar_file_name=',full_tar_file_name
-            tar_obj = tarfile.open(full_tar_file_name,'w:gz')
+            tar_dlp_log_files_name = 'skyguard_wep_'  + date_str + '.tar.gz'
+            full_tar_dlp_log_files_name = os.path.join(desktop_dir,tar_dlp_log_files_name)
+            #print 'full_tar_dlp_log_files_name=',full_tar_dlp_log_files_name
+            tar_obj = tarfile.open(full_tar_dlp_log_files_name,'w:gz')
             #获取字典中非空的数据
             log_dir_data = {k: v for k, v in log_dir_data.items() if v}
             log_dirs = [v for k, v in log_dir_data.items() if v]
@@ -178,9 +183,9 @@ class WepLogCollection:
                 else:
                     pass
             tar_obj.close()
-            print('完成终端日志收集，日志输出目录为：%s' % full_tar_file_name)
+            print('完成终端日志收集，日志输出目录为：%s' % full_tar_dlp_log_files_name)
         self.restore_log_level()
-        return
+        return full_tar_dlp_log_files_name
     
     def set_sdklog_level(self,level=''):
         if not level:
@@ -247,6 +252,6 @@ if __name__ == '__main__':
     print(desciption)
     print('---------------------End 使用示例 --------------------------------\n')
     wep_log_obj = WepLogCollection(ep_version=version,types=log_type,out_put_dir='',debug=sdk_debug,timer=wait_seconds)
-    wep_log_obj.tar_file()
+    wep_log_obj.tar_dlp_log_files()
     #wep_log_obj.set_sdklog_level(level='INFO')
     
