@@ -62,7 +62,7 @@ class WepLogCollection:
         设置要收集的日志类型，如果需要收集特殊日志或者配置文件，参数specify必须非空
         :parama types: str or list type
         """
-        valid_log_types = ['agent','sdk','hook','install','specify']
+        valid_log_types = ['agent','sdk','hook','install','specify','all','default']
         if types:
             pass
         else:#默认只取agent和sdk的日志
@@ -221,7 +221,7 @@ if __name__ == '__main__':
     parser.add_argument('-s','--specify', type=str, default='',help='收集指定目录或者指定文件，通常用于添加配置文件到压缩包。使用该参数时，log-types必须包含"specify"的日志类型') 
     args = parser.parse_args()
     version = args.version
-    log_type = args.log_types.split(',')
+    log_type = args.log_types
     sdk_debug = args.debug.upper()
     wait_seconds = args.time
     specify = args.specify
@@ -235,6 +235,7 @@ if __name__ == '__main__':
     print('当前参数设置如下：')
     desciption =  '终端版本：%s ，收集的日志包括：%s ，UCSC 日志level模式：%s 。' % (version,log_type,sdk_debug)
     addition = ''
+    log_type = log_type.split(',')
     if sdk_debug in ['DEBUG','TRACE']:
         if wait_seconds>0:
             addition = '\n 开启或切换日志模式为%s，并延迟%s 秒收集日志。'% (sdk_debug,wait_seconds)
@@ -249,6 +250,6 @@ if __name__ == '__main__':
     print(desciption)
     print('---------------------End 使用示例 --------------------------------\n')
     wep_log_obj = WepLogCollection(ep_version=version,types=log_type,out_put_dir='',debug=sdk_debug,timer=wait_seconds)
-    wep_log_obj.tar_dlp_log_files()
+    #wep_log_obj.tar_dlp_log_files()
     #wep_log_obj.set_sdklog_level(level='INFO')
     
