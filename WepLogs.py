@@ -26,6 +26,7 @@ class WepLogCollection:
         if self.log_types:
             self.set_specify(specify) #设置特殊目录日志
             self.set_all_version_datas()
+            print('self.get_version_data()=',self.get_version_data())
             self.tar_dlp_log_files(self.get_version_data())
         else:
             self.set_sdklog_level(debug)
@@ -62,7 +63,7 @@ class WepLogCollection:
         设置要收集的日志类型，如果需要收集特殊日志或者配置文件，参数specify必须非空
         :parama types: str or list type
         """
-        valid_log_types = ['agent','sdk','hook','install','specify','all','default']
+        valid_log_types = ['agent','sdk','hook','install','specify']
         if types:
             pass
         else:#默认只取agent和sdk的日志
@@ -77,12 +78,20 @@ class WepLogCollection:
                 self.log_types = valid_log_types
             else:
                 print('ERROR：输入无效的日志类型：%s' % types)
-        elif isinstance(types, list): #给定多种类型，list 
-            invalid_log_types = list(set(types).difference(set(valid_log_types)))
-            if invalid_log_types:
-                print('ERROR-输入无效的多种日志类型：%s' % invalid_log_types)
-            #如果有无效的日志类型，剔除无效的日志类型
-            self.log_types = list(set(valid_log_types).intersection(set(types)))
+        elif isinstance(types, list): #给定多种类型，list    
+            default_types = list(set(['default','all']).intersection(set(types)))
+            if len(default_types)==0: #无all或default 类型
+                self.log_types = list(set(valid_log_types).intersection(set(types)))
+                invalid_log_types = list(set(types).difference(set(valid_log_types)))
+                if invalid_log_types: #判断是否有无效的数据类型
+                    print('ERROR-输入无效的多种日志类型：%s' % invalid_log_types)
+            elif len(default_types)==1: #含all或default 类型之一
+                if 'all' in types:
+                    self.log_types = valid_log_types
+                else: #'default' in types:
+                    self.log_types = list(set(valid_log_types).intersection(set(types+['agent','sdk'])))
+            else:
+                print('ERROR： default和all类型不能同时选择！')
         else:
             print('ERROR-输入其他无效的日志类型：%s，请确保数日str或者是list类型！' % type(types))
         return
@@ -113,7 +122,9 @@ class WepLogCollection:
     def get_version_data(self):
         if self.is_valid_ep_version():
             log_dir_data = self.all_version_datas[self.ep_version]
+            print('log_dir_data=',log_dir_data)
             all_this_version_types = list(log_dir_data.keys())
+            print('self.log_types=',self.log_types)
             except_logs_types = list(set(all_this_version_types).difference(self.log_types))
             if except_logs_types: #收集已定义日志类型中的一部分
                 for type in except_logs_types: #如果在例外，则置空
@@ -167,7 +178,7 @@ class WepLogCollection:
             #print log_dirs
             profix_dirs = ['PROGRAMW6432_','APPDATA_','TEMP_']
             for dir in log_dirs:
-                #print dir
+                print dir
                 for profix in profix_dirs:
                     if profix in dir:
                         dirs = dir.split('_')
@@ -176,10 +187,16 @@ class WepLogCollection:
                         #print 'this_dir=',this_dir
                         if this_dir and os.path.exists(this_dir):
                             tar_obj.add(this_dir) 
+                            break
                         else:
                             print('目录不存在，请检查终端是否已安装：%s' % this_dir)
+                    else:
+                        pass
                 else:
-                    pass
+                    if dir and os.path.exists(dir):
+                            tar_obj.add(dir) 
+                    else:
+                        pass
             tar_obj.close()
             print('完成终端日志收集，日志输出目录为：%s' % full_tar_dlp_log_files_name)
         if is_switch_sdk_log_level:
