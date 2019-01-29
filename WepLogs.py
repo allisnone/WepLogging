@@ -178,24 +178,26 @@ class WepLogCollection:
             #print log_dirs
             profix_dirs = ['PROGRAMW6432_','APPDATA_','TEMP_']
             for dir in log_dirs:
+                print('dir=',dir)
                 for profix in profix_dirs:
                     if profix in dir:
                         dirs = dir.split('_')
-                        #print 'dirs=',dirs
+                        #print('dir2=',dirs)
                         this_dir = os.path.join(os.getenv(dirs[0]),dirs[1])
-                        #print 'this_dir=',this_dir
+                        print('this_dir=',this_dir)
                         if this_dir and os.path.exists(this_dir):
                             tar_obj.add(this_dir) 
                             break
                         else:
-                            print('目录不存在，请检查终端是否已安装：%s' % this_dir)
+                            print('ERROR: 目录不存在，请检查终端是否已安装：%s' % this_dir)
                     else:
                         pass
                 else:
+                    print('dir1=',dir)
                     if dir and os.path.exists(dir):
                             tar_obj.add(dir) 
                     else:
-                        pass
+                        print('ERROR: 目录不存在，请检查终端是否已安装：%s' % dir)
             tar_obj.close()
             print('完成终端日志收集，日志输出目录为：%s' % full_tar_dlp_log_files_name)
         if is_switch_sdk_log_level:
