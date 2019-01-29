@@ -176,6 +176,8 @@ class WepLogCollection:
                         #print 'this_dir=',this_dir
                         if this_dir and os.path.exists(this_dir):
                             tar_obj.add(this_dir) 
+                        else:
+                            print('目录不存在，请检查终端是否已安装：%s' % this_dir)
                 else:
                     pass
             tar_obj.close()
