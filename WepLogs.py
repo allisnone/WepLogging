@@ -178,7 +178,6 @@ class WepLogCollection:
             #print log_dirs
             profix_dirs = ['PROGRAMW6432_','APPDATA_','TEMP_']
             for dir in log_dirs:
-                print dir
                 for profix in profix_dirs:
                     if profix in dir:
                         dirs = dir.split('_')
