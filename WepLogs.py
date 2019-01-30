@@ -33,26 +33,6 @@ class WepLogCollection:
             self.restore_log_level()
         return    
     
-    def creat_dlp_dirs(self):
-        os.getcwd()
-        os.listdir('desktop')
-        os.chdir('desktop')
-        #os.mkdir('dlp')
-        os.makedirs('dlp\\agent')
-        os.makedirs('dlp\\sdk')
-        os.makedirs('dlp\\hook')
-        os.makedirs('dlp\\install')
-        os.makedirs('dlp\\specify')
-        os.rmdkir('dlp\\specify')
-        #shutil.copy(src_file,dst)  #file to file or dir
-        shutil.copy2('temp\element.html','dlp\sdk')  #file to file or dir, including time
-        shutil.copytree('temp','dlp\\sdk\\var') # dir to newdir/non-existing
-        shutil.copytree('temp','dlp\\sdk\\var')
-        shutil.move(src,dst)
-        shutil.rmtree(dst)
-        
-        return
-    
     def get_agent_version(self): 
         return       
     
@@ -290,9 +270,6 @@ if __name__ == '__main__':
     print(desciption)
     print('---------------------End 使用示例 --------------------------------\n')
     wep_log_obj = WepLogCollection(ep_version=version,types=log_type,out_put_dir='',debug=sdk_debug,timer=wait_seconds)
-    os.chdir('C:\\Users\\Administrator\\Desktop')
-    r = os.popen('grep class temp\\element.html').readlines()  #chcp 65001  chcp 936
-    print(r)
     #wep_log_obj.tar_dlp_log_files()
     #wep_log_obj.set_sdklog_level(level='INFO')
     
