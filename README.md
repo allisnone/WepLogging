@@ -9,3 +9,43 @@ To collect windows endpoint logs including:
 
 All logs will output to Desktop:
 %userprofile%\desktop\Skyguard_ep_201901026_tar.gz
+
+
+use following cmd to transfer python to exe:
+pyinstaller -F -i 257.ico WepLogs.py
+
+then you can directly run WepLogs.exe in windows OS:
+WepLogs.exe -l all
+
+if charset/encoding error(UnicodeEncodeError), run following cmd before run WepLogs.exe:
+chcp 65001
+set PYTHONIOENCODING=utf-8
+
+
+WepLogs.exe 使用方法:
+1. 获取终端的主要默认日志，包括agent 和 sdk 日志: 直接双击exe文件，或者不加参数直接命令行运行
+WepLogs.exe 
+or WepLogs.exe  -l default
+2. 获取全部终端日志，包括 agent, sdk , Installation, app hook
+WepLogs.exe  -l all
+
+3. 获取多个日志：
+WepLogs.exe  -l sdk,hook
+
+4. 获取额外指定的文件或目录：
+WepLogs.exe -l all -s "C:\Program Files\SkyGuard\SkyGuard Endpoint\EndpointAgent\etc"
+WepLogs.exe -l sdk,specify -s "C:\Program Files\SkyGuard\SkyGuard Endpoint\EndpointAgent\etc"
+
+5. 仅仅打开sdk DEBUG/TRACE 模式，不收集日志： 通常稍后再收集日志。
+
+WepLogs.exe  -t 0 -d DEBUG
+WepLogs.exe  -t 0 -d TRACE
+
+事后需要手动恢复为INFO模式：
+WepLogs.exe  -t 0 -d INFO
+
+6. 打开DEBUG日志10分钟后，再收集日志：通常用于用户模拟触发特定场景/事件； -t 参数必须大于0，默认-t参数为-1，表示不等待，只收集日志。
+WepLogs.exe  -t 600 -d DEBUG                #开启SDK DEBUG 模式后，等待10分钟，然后收集 sdk, agent日志，收集完日志后恢复INFO模式
+WepLogs.exe  -t 600 -d TRACE								#开启SDK TRACE 模式后，等待10分钟，然后收集 sdk, agent日志，收集完日志后恢复INFO模式
+WepLogs.exe  -t 600 -d DEBUG	-l all							#开启SDK DEBUG 模式后，等待10分钟，然后收集所有日志，收集完日志后恢复INFO模式
+

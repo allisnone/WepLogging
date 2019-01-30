@@ -19,7 +19,7 @@ class WepLogCollection:
         self.sdk_debug = debug
         self.timer = timer
         self.specify = specify
-        self.valid_versions = ['v2.3.0', 'v2.2.0']
+        self.valid_versions = ['v2.3,.0', 'v2.2.0']
         self.log_dir_data = {}
         self.initial_dlp_logs(types,specify,debug)
         
@@ -28,7 +28,6 @@ class WepLogCollection:
         if self.log_types:
             self.set_specify(specify) #设置特殊目录日志
             self.set_all_version_datas()
-            print('self.get_version_data()=',self.get_version_data())
             self.tar_dlp_log_files(self.get_version_data())
         else:
             self.set_sdklog_level(debug)
@@ -54,10 +53,8 @@ class WepLogCollection:
     def set_specify(self,specify=''):
         if specify:
             self.specify = specify
-        if 'specify' in self.log_types: #设置特殊目录日志
-                pass
         else:
-            self.specify = ''
+            pass
         return
     
     def set_log_types(self,types=''):
@@ -124,9 +121,8 @@ class WepLogCollection:
     def get_version_data(self):
         if self.is_valid_ep_version():
             log_dir_data = self.all_version_datas[self.ep_version]
-            print('log_dir_data=',log_dir_data)
+            #print('log_dir_data=',log_dir_data)
             all_this_version_types = list(log_dir_data.keys())
-            print('self.log_types=',self.log_types)
             except_logs_types = list(set(all_this_version_types).difference(self.log_types))
             if except_logs_types: #收集已定义日志类型中的一部分
                 for type in except_logs_types: #如果在例外，则置空
@@ -137,6 +133,7 @@ class WepLogCollection:
                 log_dir_data['specify'] = self.specify
             else:
                 pass
+            #print('log_dir_data=',log_dir_data)
             return log_dir_data
         else:
             print('ERROR：请设置正确的ep_version或更新all_version_datas！')
@@ -149,18 +146,19 @@ class WepLogCollection:
         """
         full_tar_dlp_log_files_name = ''
         is_switch_sdk_log_level = False
-        if self.sdk_debug in ['DEBUG', 'TRACE']:
+        if self.sdk_debug in ['INFO','DEBUG', 'TRACE']:
             #DEBUG或者TRACE模式时，设置SDK 的log level
-            self.set_sdklog_level()
             is_switch_sdk_log_level = True
             if self.timer>0: #DEBUG或者Trace模式，同时时间大于0时，等待若干秒
-                print('已开启SDK日志模式: %s, 将等待%s秒后自动收集日志...' % (level,self.timer))
+                self.set_sdklog_level()
+                print('已开启SDK日志模式: %s, 将等待%s秒后自动收集日志...' % (self.sdk_debug,self.timer))
                 time.sleep(self.timer)
             elif self.timer==0:  #仅开启DEBUG或者TRACE模式，且不收集日志
-                print('仅开启SDK日志模式: %s' % level)
+                self.set_sdklog_level()
+                print('仅开启SDK日志模式: %s' % self.sdk_debug)
                 return
-            else:#无效时间
-                return
+            else:#小于0的整数，仅仅收集日志
+                pass
         if log_dir_data:
             date_str = time.strftime('%Y%m%d%H%M',time.localtime(time.time()))
             #print os.environ 
@@ -180,11 +178,11 @@ class WepLogCollection:
             #print log_dirs
             profix_dirs = ['PROGRAMW6432_','APPDATA_','TEMP_']
             for dir in log_dirs:
-                print('dir=',dir)
+                #print('dir=',dir)
                 for profix in profix_dirs:
                     if profix in dir:
                         dirs = dir.split('_')
-                        #print('dir2=',dirs)
+                        ##print('dir2=',dirs)
                         this_dir = os.path.join(os.getenv(dirs[0]),dirs[1])
                         print('this_dir=',this_dir)
                         if this_dir and os.path.exists(this_dir):
@@ -195,14 +193,14 @@ class WepLogCollection:
                     else:
                         pass
                 else:
-                    print('dir1=',dir)
+                    #print('dir1=',dir)
                     if dir and os.path.exists(dir):
                             tar_obj.add(dir) 
                     else:
                         print('ERROR: 目录不存在，请检查终端是否已安装：%s' % dir)
             tar_obj.close()
             print('完成终端日志收集，日志输出目录为：%s' % full_tar_dlp_log_files_name)
-        if is_switch_sdk_log_level:
+        if is_switch_sdk_log_level and self.timer>0:
             self.restore_log_level()
         return full_tar_dlp_log_files_name
     
@@ -239,7 +237,7 @@ if __name__ == '__main__':
     parser.add_argument('-v','--version', type=str, default = 'v2.3.0',help='指定需收集日志的终端的版本，格式如v2.3.0') 
     parser.add_argument('-l','--log-types', type=str, default= 'default',help='收集终端模块的日志类型，有效类型：all（除specify以外的所有类型）, defualt（agent,sdk两种）, 或[agent,sdk,hook,install,specify]的任意组合-需以英文逗号分隔。')
     parser.add_argument('-d','--debug', type=str, default='INFO',help='是否开启或者切换SDK日志level，有效level为: INFO, DEBUG, TRACE；其他输入为无效，不改变sdk的日志模式。')
-    parser.add_argument('-t','--time', type=int, default=300,help='先切换SDK的日志模式，等待若干秒后，再收集日志，与-d DEBUG（或TRACE）参数组合使用；通常用于收集特定场景的日志。') 
+    parser.add_argument('-t','--time', type=int, default=-1,help='先切换SDK的日志模式，等待若干秒后，再收集日志，与-d DEBUG（或TRACE）参数组合使用；通常用于收集特定场景的日志。') 
     parser.add_argument('-s','--specify', type=str, default='',help='收集指定目录或者指定文件，通常用于添加配置文件到压缩包。使用该参数时，log-types必须包含"specify"的日志类型') 
     args = parser.parse_args()
     version = args.version
@@ -255,7 +253,7 @@ if __name__ == '__main__':
     print('4. 可以开启DEBUG模式后300秒，再[agent, sdk]收集日志： python WepLogs.py -d DEBUG -t 300 ')
     print('\n')
     print('当前参数设置如下：')
-    desciption =  '终端版本：%s ，收集的日志包括：%s ，UCSC 日志level模式：%s 。' % (version,log_type,sdk_debug)
+    desciption =  '终端版本：%s ，收集的日志包括：%s ，UCSC 日志level模式：%s , 等待时间%s, 指定目录: %s。' % (version,log_type,sdk_debug,wait_seconds,specify)
     addition = ''
     log_type = log_type.split(',')
     if sdk_debug in ['DEBUG','TRACE']:
@@ -271,7 +269,7 @@ if __name__ == '__main__':
     desciption = desciption + addition
     print(desciption)
     print('---------------------End 使用示例 --------------------------------\n')
-    wep_log_obj = WepLogCollection(ep_version=version,types=log_type,out_put_dir='',debug=sdk_debug,timer=wait_seconds)
+    wep_log_obj = WepLogCollection(ep_version=version,types=log_type,specify=specify,out_put_dir='',debug=sdk_debug,timer=wait_seconds)
     #wep_log_obj.tar_dlp_log_files()
     #wep_log_obj.set_sdklog_level(level='INFO')
     
