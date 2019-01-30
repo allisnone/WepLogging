@@ -230,6 +230,7 @@ class WepLogCollection:
     def restore_log_level(self):
         if self.sdk_debug in ['DEBUG', 'TRACE']:
             self.set_sdklog_level(level='INFO')
+            print('已恢复SDK日志为INFO模式！')
         return
     
 if __name__ == '__main__':
@@ -253,7 +254,7 @@ if __name__ == '__main__':
     print('4. 可以开启DEBUG模式后300秒，再[agent, sdk]收集日志： python WepLogs.py -d DEBUG -t 300 ')
     print('\n')
     print('当前参数设置如下：')
-    desciption =  '终端版本：%s ，收集的日志包括：%s ，UCSC 日志level模式：%s , 等待时间%s, 指定目录: %s。' % (version,log_type,sdk_debug,wait_seconds,specify)
+    desciption =  '终端版本：%s ，收集的日志包括：%s ，UCSC 日志level模式：%s , 等待时间：%s秒, 指定目录: %s。' % (version,log_type,sdk_debug,wait_seconds,specify)
     addition = ''
     log_type = log_type.split(',')
     if sdk_debug in ['DEBUG','TRACE']:
