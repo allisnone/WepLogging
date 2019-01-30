@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #__Author__= allisnone #2019-01-26
 import argparse
+import sys
 import tarfile
 import time
 import os
@@ -233,6 +234,8 @@ class WepLogCollection:
         return
     
 if __name__ == '__main__':
+    reload(sys)
+    sys.setdefaultencoding( "utf-8" )
     parser = argparse.ArgumentParser(description='manual to this script') 
     parser.add_argument('-v','--version', type=str, default = 'v2.3.0',help='指定需收集日志的终端的版本，格式如v2.3.0') 
     parser.add_argument('-l','--log-types', type=str, default= 'default',help='收集终端模块的日志类型，有效类型：all（除specify以外的所有类型）, defualt（agent,sdk两种）, 或[agent,sdk,hook,install,specify]的任意组合-需以英文逗号分隔。')
