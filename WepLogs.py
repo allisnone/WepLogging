@@ -206,7 +206,7 @@ class WepLogCollection:
                     else:
                         print('ERROR: 目录不存在，请检查终端是否已安装1：%s' % dir)
             tar_obj.close()
-            print('完成终端日志收集，日志输出目录为：%s' % full_tar_dlp_log_files_name)
+            print('完成终端日志收集，日志输出目录为：\n%s' % full_tar_dlp_log_files_name)
         if is_switch_sdk_log_level and self.timer>0:
             self.restore_log_level()
         return full_tar_dlp_log_files_name
@@ -253,6 +253,7 @@ if __name__ == '__main__':
     sdk_debug = args.debug.upper()
     wait_seconds = args.time
     specify = args.specify
+    """
     #print '\n'
     print('---------------------Start 使用示例--------------------------------')
     print('1. 获取更多参数帮助：python WepLogs.py -h') 
@@ -260,7 +261,7 @@ if __name__ == '__main__':
     print('3. 加参数时，使用示例： python WepLogs.py -v v2.3.0 -l agent,sdk,hook,specify -d DEBUG -t 300 -s "C:\Program Files\SkyGuard\SkyGuard Endpoint\EndpointAgent\etc\"')
     print('4. 可以开启DEBUG模式后300秒，再[agent, sdk]收集日志： python WepLogs.py -d DEBUG -t 300 ')
     print('\n')
-    print('当前参数设置如下：')
+    """
     desciption =  '终端版本：%s ，收集的日志包括：%s ，UCSC 日志level模式：%s , 等待时间：%s秒, 指定目录: %s。' % (version,log_type,sdk_debug,wait_seconds,specify)
     addition = ''
     log_type = log_type.split(',')
@@ -275,8 +276,10 @@ if __name__ == '__main__':
     if specify:
         addition = addition + '收集的指定目录或者文件： %s'% specify
     desciption = desciption + addition
+    #print('---------------------End 使用示例 --------------------------------\n')
+    print('---------------------收集 DLP 日志：--------------------------------')
+    print('当前参数设置如下：')
     print(desciption)
-    print('---------------------End 使用示例 --------------------------------\n')
     wep_log_obj = WepLogCollection(ep_version=version,types=log_type,specify=specify,out_put_dir='',debug=sdk_debug,timer=wait_seconds)
     #wep_log_obj.tar_dlp_log_files()
     #wep_log_obj.set_sdklog_level(level='INFO')
