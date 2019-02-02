@@ -6,7 +6,8 @@ To collect windows endpoint logs including:
 4. Installation logs: %temp%\EndpointInstaller.log
 5. Running time database: %promgramfiles%\SkyGuard\SkyGuard Endpoint\UCSCSDK\var\
 6. Spetial log or config file or dirs.
-
+转化为exe文件：
+pyinstaller -F -w -i 257.ico WepLogs.py
 All logs will output to Desktop:
 %userprofile%\desktop\Skyguard_ep_201901026_tar.gz
 
@@ -20,6 +21,7 @@ WepLogs.exe -l all
 if charset/encoding error(UnicodeEncodeError), run following cmd before run WepLogs.exe:
 chcp 65001
 set PYTHONIOENCODING=utf-8
+
 
 
 WepLogs.exe 使用方法:

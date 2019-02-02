@@ -196,7 +196,7 @@ class WepLogCollection:
                             tar_obj.add(this_dir) 
                             break
                         else:
-                            print('ERROR: 目录不存在，请检查终端是否已安装：%s' % this_dir)
+                            print('Warning: 目录不存在，请检查终端是否已安装：%s' % this_dir)
                     else:
                         pass
                 #print('dir=',dir,is_spectial_head)
@@ -204,7 +204,7 @@ class WepLogCollection:
                     if dir and os.path.exists(dir):
                             tar_obj.add(dir) 
                     else:
-                        print('ERROR: 目录不存在，请检查终端是否已安装1：%s' % dir)
+                        print('Warning: 目录不存在，请检查终端是否已安装1：%s' % dir)
             tar_obj.close()
             print('完成终端日志收集，日志输出目录为：\n%s' % full_tar_dlp_log_files_name)
         if is_switch_sdk_log_level and self.timer>0:
@@ -231,7 +231,7 @@ class WepLogCollection:
             else:
                 print('ERROR: 不存在该SDK日志模式%s' % level)
         else:
-            print('ERROR: 文件不存在%s' % sdk_util)
+            print('Warning: 文件不存在%s' % sdk_util)
         return is_swtich_successful
     
     def restore_log_level(self):
