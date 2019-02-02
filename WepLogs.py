@@ -63,16 +63,17 @@ class WepLogCollection:
         :parama types: str or list type
         """
         valid_log_types = ['agent','sdk','hook','install','specify']
+        default_type_list = ['agent','sdk','install']
         if types:
             pass
         else:#默认只取agent和sdk的日志
-            self.log_types = ['agent','sdk']
+            self.log_types = default_type_list
             return 
         if isinstance(types,str): #一种类型
             if types in valid_log_types:
                 self.log_types = [type]
             elif types=='default': #默认只取agent和sdk的日志
-                self.log_types = ['agent','sdk']
+                self.log_types = default_type_list
             elif types=='all': #收取全部日志
                 self.log_types = valid_log_types
             else:
@@ -88,7 +89,7 @@ class WepLogCollection:
                 if 'all' in types:
                     self.log_types = valid_log_types
                 else: #'default' in types:
-                    self.log_types = list(set(valid_log_types).intersection(set(types+['agent','sdk'])))
+                    self.log_types = list(set(valid_log_types).intersection(set(types + default_type_list)))
             else:
                 print('ERROR： default和all类型不能同时选择！')
         else:
@@ -110,7 +111,7 @@ class WepLogCollection:
                 'sdk': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\log\\',
                 'hook': 'APPDATA_SkyGuard\SkyGuard Endpoint\\var\\log\\',
                 'install': 'TEMP_EndpointInstaller.log',
-                'sdkdb': '%PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\cache\\',
+                'sdkdb': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\cache\\',
                 'specify': ''
                 },   
             }
@@ -173,18 +174,24 @@ class WepLogCollection:
             tar_obj = tarfile.open(full_tar_dlp_log_files_name,'w:gz')
             #获取字典中非空的数据
             log_dir_data = {k: v for k, v in log_dir_data.items() if v}
-            log_dirs = [v for k, v in log_dir_data.items() if v]
-            #print log_dir_data
-            #print log_dirs
+            log_dirs = []
+            for k, v in log_dir_data.items():
+                log_dirs.append(v)
+                if k =='install':
+                    log_dirs.append('TEMP_EndpointInstaller1.log')
+                    log_dirs.append('TEMP_EndpointInstaller2.log')
+                else:
+                    pass
+            #log_dirs = [v for k, v in log_dir_data.items() if v]
             profix_dirs = ['PROGRAMW6432_','APPDATA_','TEMP_']
             for dir in log_dirs:
-                #print('dir=',dir)
+                
+                is_spectial_head = False
                 for profix in profix_dirs:
                     if profix in dir:
                         dirs = dir.split('_')
-                        ##print('dir2=',dirs)
+                        is_spectial_head = True
                         this_dir = os.path.join(os.getenv(dirs[0]),dirs[1])
-                        print('this_dir=',this_dir)
                         if this_dir and os.path.exists(this_dir):
                             tar_obj.add(this_dir) 
                             break
@@ -192,12 +199,12 @@ class WepLogCollection:
                             print('ERROR: 目录不存在，请检查终端是否已安装：%s' % this_dir)
                     else:
                         pass
-                else:
-                    #print('dir1=',dir)
+                #print('dir=',dir,is_spectial_head)
+                if not is_spectial_head:
                     if dir and os.path.exists(dir):
                             tar_obj.add(dir) 
                     else:
-                        print('ERROR: 目录不存在，请检查终端是否已安装：%s' % dir)
+                        print('ERROR: 目录不存在，请检查终端是否已安装1：%s' % dir)
             tar_obj.close()
             print('完成终端日志收集，日志输出目录为：%s' % full_tar_dlp_log_files_name)
         if is_switch_sdk_log_level and self.timer>0:
