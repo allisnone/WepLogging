@@ -52,3 +52,7 @@ WepLogs.exe  -t 600 -d DEBUG                #¿ªÆôSDK DEBUG Ä£Ê½ºó£¬µÈ´ý10·ÖÖÓ£¬È
 WepLogs.exe  -t 600 -d TRACE								#¿ªÆôSDK TRACE Ä£Ê½ºó£¬µÈ´ý10·ÖÖÓ£¬È»ºóÊÕ¼¯ sdk, agentÈÕÖ¾£¬ÊÕ¼¯ÍêÈÕÖ¾ºó»Ö¸´INFOÄ£Ê½
 WepLogs.exe  -t 600 -d DEBUG	-l all				#¿ªÆôSDK DEBUG Ä£Ê½ºó£¬µÈ´ý10·ÖÖÓ£¬È»ºóÊÕ¼¯ËùÓÐÈÕÖ¾£¬ÊÕ¼¯ÍêÈÕÖ¾ºó»Ö¸´INFOÄ£Ê½
 
+7. ÊÕ¼¯ÈÕÖ¾²¢ÉÏ´«µ½SFTP·þÎñÆ÷£º
+python WepLogs.py -f 172.22.80.205 -o 12039 -p 473385fc #ÉÏ´«µ½sftp·þÎñÆ÷Ä¬ÈÏ/tmpÄ¿Â¼
+python WepLogs.py -f 172.22.80.205 -o 12039 -p 473385fc -e /home/skyguardts/dlplogs #ÉÏ´«µ½sftp·þÎñÆ÷/home/skyguardts/dlplogsÄ¿Â¼
+
