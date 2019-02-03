@@ -261,10 +261,13 @@ class WepLogCollection:
             print('Warning: 文件不存在%s' % sdk_util)
         return is_swtich_successful
     
-    def restore_log_level(self):
+    def restore_log_level(self,force=False):
         """
         恢复SDK日志级别为INFO
         """
+        if force:
+            self.set_sdklog_level(level='INFO')
+            return 
         if self.sdk_debug in ['DEBUG', 'TRACE']:
             self.set_sdklog_level(level='INFO')
             print('已恢复SDK日志为INFO模式！')
