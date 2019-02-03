@@ -47,11 +47,29 @@ class WepLogCollection:
         return
     
     def is_valid_ep_version(self,version=''):
+        """
+        判断是否是有效的终端版本，v2.3.0,V2.3.0,v2.3,V2.3,v2,v3
+        """
+        ver = self.ep_version
         if version: 
-            return version.lower() in list(self.all_version_datas.keys())
-        return self.ep_version in list(self.all_version_datas.keys())
+            ver = version
+        if ver and isinstance(ver,str):
+            if 'v' not in ver:
+                ver = 'v' + ver
+            if len(ver.split('.'))==1:
+                ver = ver + '.0'
+            elif len(ver.split('.'))==0:
+                ver = ver + '.0.0'
+            else:
+                pass
+        else:
+            return False
+        return ver.lower() in list(self.all_version_datas.keys())
     
     def set_specify(self,specify=''):
+        """
+        设置特定目录
+        """
         if specify:
             self.specify = specify
         else:
@@ -98,15 +116,20 @@ class WepLogCollection:
         return
     
     def set_all_version_datas(self,datas={}):
-        self.all_version_datas = {
-            'v2.3.0':{
+        """
+        设置各版本要收集的日志目录或者文件
+        """
+        v23_datas = {
                 'agent': 'PROGRAMW6432_SkyGuard\SkyGuard Endpoint\EndpointAgent\\var\\log\\',
                 'sdk': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\log\\',
                 'hook': 'APPDATA_SkyGuard\SkyGuard Endpoint\\var\\log\\',
                 'install': 'TEMP_EndpointInstaller.log',
                 'sdkdb': '%PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\cache\\',
                 'specify': ''
-                },
+                }
+        self.all_version_datas = {
+            'v3.0.0': v23_datas,
+            'v2.3.0': v23_datas,
             'v2.2.0':{
                 'agent': 'PROGRAMW6432_SkyGuard\SkyGuard Endpoint\EndpointAgent\\var\\log\\',
                 'sdk': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\log\\',
@@ -121,6 +144,9 @@ class WepLogCollection:
         return
             
     def get_version_data(self):
+        """
+        获取要收集的该终端的目录/文件信息
+        """
         if self.is_valid_ep_version():
             log_dir_data = self.all_version_datas[self.ep_version]
             #print('log_dir_data=',log_dir_data)
@@ -158,16 +184,13 @@ class WepLogCollection:
             elif self.timer==0:  #仅开启DEBUG或者TRACE模式，且不收集日志
                 self.set_sdklog_level()
                 print('仅开启SDK日志模式: %s' % self.sdk_debug)
-                return
+                return ''
             else:#小于0的整数，仅仅收集日志
                 pass
         if log_dir_data:
             date_str = time.strftime('%Y%m%d%H%M',time.localtime(time.time()))
             #print os.environ 
-            #print os.getenv('APPDATA')
             #print os.getenv('PROGRAMW6432')
-            #print os.getenv('TEMP')
-            #print os.getenv('USERPROFILE')
             user_path = os.path.expanduser("~")
             desktop_dir = os.path.join(user_path, 'Desktop')
             tar_dlp_log_files_name = 'skydlp_' + user_path.split('\\')[-1] + '_'  + date_str + '.tar.gz'
@@ -198,7 +221,7 @@ class WepLogCollection:
                             tar_obj.add(this_dir) 
                             break
                         else:
-                            print('Warning: 目录不存在，请检查终端是否已安装：%s' % this_dir)
+                            print('Warning: 文件或目录不存在，请检查终端是否已安装：%s' % this_dir)
                     else:
                         pass
                 #print('dir=',dir,is_spectial_head)
@@ -206,13 +229,16 @@ class WepLogCollection:
                     if dir and os.path.exists(dir):
                             tar_obj.add(dir) 
                     else:
-                        print('Warning: 目录不存在，请检查终端是否已安装1：%s' % dir)
+                        print('Warning: 文件或者目录不存在，请检查终端是否已安装1：%s' % dir)
             tar_obj.close()
         if is_switch_sdk_log_level and self.timer>0:
             self.restore_log_level()
         return full_tar_dlp_log_files_name
     
     def set_sdklog_level(self,level=''):
+        """
+        设置sdk日志级别，返回是否切换成功
+        """
         if not level:
             level = self.sdk_debug
         sdk_util = os.path.join(os.getenv('PROGRAMW6432'),'SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\bin\\ucsc_util.exe')
@@ -236,18 +262,23 @@ class WepLogCollection:
         return is_swtich_successful
     
     def restore_log_level(self):
+        """
+        恢复SDK日志级别为INFO
+        """
         if self.sdk_debug in ['DEBUG', 'TRACE']:
             self.set_sdklog_level(level='INFO')
             print('已恢复SDK日志为INFO模式！')
         return
     
 class SftpClient:
+    #sftp 上传或者下载文件
     def __init__(self,ip,port=22,username='skygardts',password='123456',private_key_file=''):
         self.transport = None
         self.sftp = None
         self.set_sftp_connection(ip,port,username=username,password=password,private_key_file=private_key_file)
         
     def set_sftp_connection(self,ip,port=22,username='username',password='123456',private_key_file=''):
+        #初始化sftp的连接
         self.transport = paramiko.Transport((ip, port))
         if private_key_file:
             self.transport.connect(username=username, pkey=private_key)
@@ -256,32 +287,26 @@ class SftpClient:
         self.sftp = paramiko.SFTPClient.from_transport(transport)
         return
         
-    def put(self,source,dest):
+    def _put(self,source,dest):
+        # sftp 上传文件
         return self.sftp.put(source, dest)
     
-    def get(self,source,dest):
+    def put(self,source,dest):
+        self._put(source, dest)
+        self.close()
+        return
+    
+    def _get(self,source,dest):
+        #sftp 下载文件
         return self.sftp.get(source, dest)
     
+    def get(self,source,dest):
+        self._get(source, dest)
+        self.close()
+        return 
+        
     def close(self):
         return self.transport.close()
-        
-    def upload_dlp_logs2_ucss(self,file, ucss_ip='172.22.80.205',ucss_ssh_port=12039,user='skyguardts',passwd='473385fc',ucss_dest='/tmp/'):
-        import paramiko
-        #private_key = paramiko.RSAKey.from_private_key_file('id_rsa31')
-        # 连接虚拟机centos上的ip及端口
-        print('---------------------上传已收集的DLP日志：--------------------------------')
-        transport = paramiko.Transport((ucss_ip, ucss_ssh_port))
-        transport.connect(username=user, password=passwd)
-        #transport.connect(username="skyguardts", pkey=private_key)
-        # 将实例化的Transport作为参数传入SFTPClient中
-        sftp = paramiko.SFTPClient.from_transport(transport)
-        # 将“calculator.py”上传到filelist文件夹中
-        dest_file = os.path.join(ucss_dest, file.split('\\')[-1])
-        sftp.put(file, dest_file)
-        # 将centos中的aaa.txt文件下载到桌面
-        #sftp.get('/filedir/oldtext.txt', r'C:\Users\duany_000\Desktop\oldtext.txt')
-        transport.close()
-        print('完成日志上传，目标服务器%s： %s' % (ucss_ip,dest_file))
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='manual to this script') 
@@ -340,12 +365,11 @@ if __name__ == '__main__':
     if wep_log_obj.output_logs:
         print('完成终端日志收集，日志输出目录为：\n%s' % wep_log_obj.output_logs)
         if sftp_server:
-            print('---------------------上传已收集的DLP日志：--------------------------------')
+            print('---------------------正在上传已收集的DLP日志--------------------------------')
             sftp = SftpClient(ip=sftp_server,port=sftp_port,username=sftp_username,password=sftp_password,private_key_file=sftp_key_file)
             dest_server_file = os.path.join(sftp_dest_dir, wep_log_obj.output_logs.split('\\')[-1])
             sftp.put(wep_log_obj.output_logs, dest_server_file)
-            sftp.close()
-            print('完成日志上传，目标服务器%s： %s' % (sftp_server,dest_server_file))
+            print('完成日志上传，至目标服务器%s： %s' % (sftp_server,dest_server_file))
         else:
             pass
     else:
