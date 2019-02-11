@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 #__Author__= allisnone #2019-01-26
 import argparse
-import importlib
+import os
+import paramiko
 import sys
 import tarfile
 import time
-import os
-import paramiko
-import shutil
 
 class WepLogCollection:
     """
@@ -149,7 +147,6 @@ class WepLogCollection:
         """
         if self.is_valid_ep_version():
             log_dir_data = self.all_version_datas[self.ep_version]
-            #print('log_dir_data=',log_dir_data)
             all_this_version_types = list(log_dir_data.keys())
             except_logs_types = list(set(all_this_version_types).difference(self.log_types))
             if except_logs_types: #收集已定义日志类型中的一部分
@@ -161,7 +158,6 @@ class WepLogCollection:
                 log_dir_data['specify'] = self.specify
             else:
                 pass
-            #print('log_dir_data=',log_dir_data)
             return log_dir_data
         else:
             print('ERROR：请设置正确的ep_version或更新all_version_datas！')
@@ -195,7 +191,6 @@ class WepLogCollection:
             desktop_dir = os.path.join(user_path, 'Desktop')
             tar_dlp_log_files_name = 'skydlp_' + user_path.split('\\')[-1] + '_'  + date_str + '.tar.gz'
             full_tar_dlp_log_files_name = os.path.join(desktop_dir,tar_dlp_log_files_name)
-            print('full_tar_dlp_log_files_name=',full_tar_dlp_log_files_name)
             tar_obj = tarfile.open(full_tar_dlp_log_files_name,'w:gz')
             #获取字典中非空的数据
             log_dir_data = {k: v for k, v in log_dir_data.items() if v}
@@ -210,7 +205,6 @@ class WepLogCollection:
             #log_dirs = [v for k, v in log_dir_data.items() if v]
             profix_dirs = ['PROGRAMW6432_','APPDATA_','TEMP_']
             for dir in log_dirs:
-                
                 is_spectial_head = False
                 for profix in profix_dirs:
                     if profix in dir:
@@ -224,7 +218,6 @@ class WepLogCollection:
                             print('Warning: 文件或目录不存在，请检查终端是否已安装：%s' % this_dir)
                     else:
                         pass
-                #print('dir=',dir,is_spectial_head)
                 if not is_spectial_head:
                     if dir and os.path.exists(dir):
                             tar_obj.add(dir) 
@@ -286,8 +279,8 @@ class SftpClient:
         if private_key_file:
             self.transport.connect(username=username, pkey=private_key)
         else:
-            self.transport.connect(username=username, password=passwd)
-        self.sftp = paramiko.SFTPClient.from_transport(transport)
+            self.transport.connect(username=username, password=password)
+        self.sftp = paramiko.SFTPClient.from_transport(self.transport)
         return
         
     def _put(self,source,dest):
@@ -296,7 +289,7 @@ class SftpClient:
     
     def put(self,source,dest):
         self._put(source, dest)
-        self.close()
+        self.transport.close()
         return
     
     def _get(self,source,dest):
@@ -305,7 +298,7 @@ class SftpClient:
     
     def get(self,source,dest):
         self._get(source, dest)
-        self.close()
+        self.transport.close()
         return 
         
     def close(self):
@@ -367,6 +360,10 @@ if __name__ == '__main__':
     print('wep_log_obj.output_logs=',wep_log_obj.output_logs)
     if wep_log_obj.output_logs:
         print('完成终端日志收集，日志输出目录为：\n%s' % wep_log_obj.output_logs)
+        #sftp_server = '172.22.80.205'
+        #sftp_port = 12039
+        #sftp_username = 'skyguardts'
+        #sftp_password = '473385fc'
         if sftp_server:
             print('---------------------正在上传已收集的DLP日志--------------------------------')
             sftp = SftpClient(ip=sftp_server,port=sftp_port,username=sftp_username,password=sftp_password,private_key_file=sftp_key_file)
