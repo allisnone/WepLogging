@@ -220,7 +220,7 @@ class WepLogCollection:
                         pass
                 if not is_spectial_head:
                     if dir and os.path.exists(dir):
-                            tar_obj.add(dir) 
+                        tar_obj.add(dir) 
                     else:
                         print('Warning: 文件或者目录不存在，请检查终端是否已安装1：%s' % dir)
             tar_obj.close()
@@ -329,6 +329,7 @@ if __name__ == '__main__':
     sftp_password = args.sftp_password
     sftp_key_file = args.sftp_key_file
     sftp_dest_dir = args.sftp_server_dest_dir
+    print('specify=%s'%specify)
     """
     #print '\n'
     print('---------------------Start 使用示例--------------------------------')
@@ -367,6 +368,8 @@ if __name__ == '__main__':
         if sftp_server:
             print('---------------------正在上传已收集的DLP日志--------------------------------')
             sftp = SftpClient(ip=sftp_server,port=sftp_port,username=sftp_username,password=sftp_password,private_key_file=sftp_key_file)
+            if sftp_dest_dir[-1]!='/':
+                sftp_dest_dir = sftp_dest_dir + '/'
             dest_server_file = os.path.join(sftp_dest_dir, wep_log_obj.output_logs.split('\\')[-1])
             sftp.put(wep_log_obj.output_logs, dest_server_file)
             print('完成日志上传，至目标服务器%s： %s' % (sftp_server,dest_server_file))
