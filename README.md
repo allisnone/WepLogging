@@ -69,4 +69,6 @@ WepLogs.exe  -l agent,sdk,hook,install,specify -s "C:\Program Files\SkyGuard\Sky
 sftp可能会出错：
 1）网络连接失败，请确保sftp服务器网络可达和服务已启动：paramiko.ssh_exception.SSHException: Unable to connect to 172.22.80.205: [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
 2）目标sftp目录可能没有权限：PermissionError: [Errno 13] Permission denied
-3)Windows传入带空格参数时需加英文双引号""，且双引号前面不能有反斜杠"\"-windows中反斜杠代表转义，比如：正确的路径参数是 "C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile"， 而以下路径参数是错误的："C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile\"
+3) Windows传入带空格参数时需加英文双引号""，且双引号前面不能有反斜杠"\"-windows中反斜杠代表转义，比如：正确的路径参数是 "C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile"， 而以下路径参数是错误的："C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile\"
+（Linux 中的python 目录必须以斜杠/结尾）
+4）为避免路径参数出错，请传入目录作为参数时，最后字符都不要以反斜杠\或斜杠/结尾。

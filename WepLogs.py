@@ -339,7 +339,7 @@ if __name__ == '__main__':
     print('4. 可以开启DEBUG模式后300秒，再[agent, sdk]收集日志： python WepLogs.py -d DEBUG -t 300 ')
     print('\n')
     """
-    desciption =  '终端版本：%s ，收集的日志包括：%s ，UCSC 日志level模式：%s , 等待时间：%s秒, 指定目录: %s。' % (version,log_type,sdk_debug,wait_seconds,specify)
+    desciption =  '终端版本：%s ，收集的日志包括：%s ，UCSC 日志level模式：%s , 等待时间：%s秒, sftp服务器: %s。' % (version,log_type,sdk_debug,wait_seconds,sftp_server)
     addition = ''
     log_type = log_type.split(',')
     if sdk_debug in ['DEBUG','TRACE']:
@@ -358,7 +358,6 @@ if __name__ == '__main__':
     print('当前参数设置如下：')
     print(desciption)
     wep_log_obj = WepLogCollection(ep_version=version,types=log_type,specify=specify,debug=sdk_debug,timer=wait_seconds)
-    print('wep_log_obj.output_logs=',wep_log_obj.output_logs)
     if wep_log_obj.output_logs:
         print('完成终端日志收集，日志输出目录为：\n%s' % wep_log_obj.output_logs)
         #sftp_server = '172.22.80.205'
@@ -368,7 +367,7 @@ if __name__ == '__main__':
         if sftp_server:
             print('---------------------正在上传已收集的DLP日志--------------------------------')
             sftp = SftpClient(ip=sftp_server,port=sftp_port,username=sftp_username,password=sftp_password,private_key_file=sftp_key_file)
-            if sftp_dest_dir[-1]!='/':
+            if sftp_dest_dir[-1]!='/':#Linux 目录最后字符以/结尾
                 sftp_dest_dir = sftp_dest_dir + '/'
             dest_server_file = os.path.join(sftp_dest_dir, wep_log_obj.output_logs.split('\\')[-1])
             sftp.put(wep_log_obj.output_logs, dest_server_file)
