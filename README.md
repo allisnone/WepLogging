@@ -6,9 +6,9 @@ To collect windows endpoint logs including:
 4. Installation logs: %temp%\EndpointInstaller.log
 5. Running time database: %promgramfiles%\SkyGuard\SkyGuard Endpoint\UCSCSDK\var\
 6. Spetial log or config file or dirs.
-×ª»¯ÎªexeÎÄ¼ş£º
+è½¬åŒ–ä¸ºexeæ–‡ä»¶ï¼š
 pyinstaller -F -i 257.ico WepLogs.py
-pyinstaller -F -w -i 257.ico WepLogs.py  #ºöÂÔconsoleµÄÊä³ö
+pyinstaller -F -w -i 257.ico WepLogs.py  #å¿½ç•¥consoleçš„è¾“å‡º
 All logs will output to Desktop:
 %userprofile%\desktop\Skyguard_ep_201901026_tar.gz
 
@@ -25,50 +25,51 @@ set PYTHONIOENCODING=utf-8
 
 
 
-WepLogs.exe Ê¹ÓÃ·½·¨:
-1. »ñÈ¡ÖÕ¶ËµÄÖ÷ÒªÄ¬ÈÏÈÕÖ¾£¬°üÀ¨agent ºÍ sdk ÈÕÖ¾: Ö±½ÓË«»÷exeÎÄ¼ş£¬»òÕß²»¼Ó²ÎÊıÖ±½ÓÃüÁîĞĞÔËĞĞ, ÈÕÖ¾Ñ¹Ëõ°üÎ»ÓÚ×ÀÃæ¡£ÓĞĞ§Ó¦ÓÃµÄÈÕÖ¾°üÀ¨£º
+WepLogs.exe ä½¿ç”¨æ–¹æ³•:
+1. è·å–ç»ˆç«¯çš„ä¸»è¦é»˜è®¤æ—¥å¿—ï¼ŒåŒ…æ‹¬agent å’Œ sdk æ—¥å¿—: ç›´æ¥åŒå‡»exeæ–‡ä»¶ï¼Œæˆ–è€…ä¸åŠ å‚æ•°ç›´æ¥å‘½ä»¤è¡Œè¿è¡Œ, æ—¥å¿—å‹ç¼©åŒ…ä½äºæ¡Œé¢ã€‚æœ‰æ•ˆåº”ç”¨çš„æ—¥å¿—åŒ…æ‹¬ï¼š
 ['agent','sdk','hook','install','specify']
 WepLogs.exe 
 or WepLogs.exe  -l default
-2. »ñÈ¡È«²¿ÖÕ¶ËÈÕÖ¾£¬°üÀ¨ ['agent','sdk','hook','install']
+2. è·å–å…¨éƒ¨ç»ˆç«¯æ—¥å¿—ï¼ŒåŒ…æ‹¬ ['agent','sdk','hook','install']
 WepLogs.exe  -l all
-Ïàµ±ÓÚ£º
+ç›¸å½“äºï¼š
 WepLogs.exe  -l agent,sdk,hook,install 
 
-3. »ñÈ¡¶à¸öÈÕÖ¾£º
+3. è·å–å¤šä¸ªæ—¥å¿—ï¼š
 WepLogs.exe  -l sdk,hook
 WepLogs.exe  -l agent,sdk,hook,install,specify -s "C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile"
 
-4. »ñÈ¡¶îÍâÖ¸¶¨µÄÎÄ¼ş»òÄ¿Â¼£º
+4. è·å–é¢å¤–æŒ‡å®šçš„æ–‡ä»¶æˆ–ç›®å½•ï¼š
 WepLogs.exe -l all -s "C:\Program Files\SkyGuard\SkyGuard Endpoint\EndpointAgent\etc"
 WepLogs.exe -l sdk,specify -s "C:\Program Files\SkyGuard\SkyGuard Endpoint\EndpointAgent\etc"
-WepLogs.exe -l specify -s "C:\Program Files\SkyGuard\SkyGuard Endpoint\EndpointAgent\etc"  #½ö½ö»ñÈ¡¶îÍâÖ¸¶¨µÄÎÄ¼ş»òÕßÄ¿Â¼
+WepLogs.exe -l specify -s "C:\Program Files\SkyGuard\SkyGuard Endpoint\EndpointAgent\etc"  #ä»…ä»…è·å–é¢å¤–æŒ‡å®šçš„æ–‡ä»¶æˆ–è€…ç›®å½•
 
-5. ½ö½ö´ò¿ªsdk DEBUG/TRACE Ä£Ê½£¬²»ÊÕ¼¯ÈÕÖ¾£º Í¨³£ÉÔºóÔÙÊÕ¼¯ÈÕÖ¾¡£
+5. ä»…ä»…æ‰“å¼€sdk DEBUG/TRACE æ¨¡å¼ï¼Œä¸æ”¶é›†æ—¥å¿—ï¼š é€šå¸¸ç¨åå†æ”¶é›†æ—¥å¿—ã€‚
 
 WepLogs.exe  -t 0 -d DEBUG
 WepLogs.exe  -t 0 -d TRACE
 
-ÊÂºóĞèÒªÊÖ¶¯»Ö¸´ÎªINFOÄ£Ê½£º
+äº‹åéœ€è¦æ‰‹åŠ¨æ¢å¤ä¸ºINFOæ¨¡å¼ï¼š
 WepLogs.exe  -t 0 -d INFO
 
-6. ´ò¿ªDEBUGÈÕÖ¾10·ÖÖÓºó£¬ÔÙÊÕ¼¯ÈÕÖ¾£ºÍ¨³£ÓÃÓÚÓÃ»§Ä£Äâ´¥·¢ÌØ¶¨³¡¾°/ÊÂ¼ş£» -t ²ÎÊı±ØĞë´óÓÚ0£¬Ä¬ÈÏ-t²ÎÊıÎª-1£¬±íÊ¾²»µÈ´ı£¬Ö»ÊÕ¼¯ÈÕÖ¾¡£
-WepLogs.exe  -t 600 -d DEBUG                #¿ªÆôSDK DEBUG Ä£Ê½ºó£¬µÈ´ı10·ÖÖÓ£¬È»ºóÊÕ¼¯ sdk, agentÈÕÖ¾£¬ÊÕ¼¯ÍêÈÕÖ¾ºó»Ö¸´INFOÄ£Ê½
-WepLogs.exe  -t 600 -d TRACE								#¿ªÆôSDK TRACE Ä£Ê½ºó£¬µÈ´ı10·ÖÖÓ£¬È»ºóÊÕ¼¯ sdk, agentÈÕÖ¾£¬ÊÕ¼¯ÍêÈÕÖ¾ºó»Ö¸´INFOÄ£Ê½
-WepLogs.exe  -t 600 -d DEBUG	-l all				#¿ªÆôSDK DEBUG Ä£Ê½ºó£¬µÈ´ı10·ÖÖÓ£¬È»ºóÊÕ¼¯ËùÓĞÈÕÖ¾£¬ÊÕ¼¯ÍêÈÕÖ¾ºó»Ö¸´INFOÄ£Ê½
+6. æ‰“å¼€DEBUGæ—¥å¿—10åˆ†é’Ÿåï¼Œå†æ”¶é›†æ—¥å¿—ï¼šé€šå¸¸ç”¨äºç”¨æˆ·æ¨¡æ‹Ÿè§¦å‘ç‰¹å®šåœºæ™¯/äº‹ä»¶ï¼› -t å‚æ•°å¿…é¡»å¤§äº0ï¼Œé»˜è®¤-tå‚æ•°ä¸º-1ï¼Œè¡¨ç¤ºä¸ç­‰å¾…ï¼Œåªæ”¶é›†æ—¥å¿—ã€‚
+WepLogs.exe  -t 600 -d DEBUG                #å¼€å¯SDK DEBUG æ¨¡å¼åï¼Œç­‰å¾…10åˆ†é’Ÿï¼Œç„¶åæ”¶é›† sdk, agentæ—¥å¿—ï¼Œæ”¶é›†å®Œæ—¥å¿—åæ¢å¤INFOæ¨¡å¼
+WepLogs.exe  -t 600 -d TRACE								#å¼€å¯SDK TRACE æ¨¡å¼åï¼Œç­‰å¾…10åˆ†é’Ÿï¼Œç„¶åæ”¶é›† sdk, agentæ—¥å¿—ï¼Œæ”¶é›†å®Œæ—¥å¿—åæ¢å¤INFOæ¨¡å¼
+WepLogs.exe  -t 600 -d DEBUG	-l all				#å¼€å¯SDK DEBUG æ¨¡å¼åï¼Œç­‰å¾…10åˆ†é’Ÿï¼Œç„¶åæ”¶é›†æ‰€æœ‰æ—¥å¿—ï¼Œæ”¶é›†å®Œæ—¥å¿—åæ¢å¤INFOæ¨¡å¼
 
-7. ÊÕ¼¯ÈÕÖ¾²¢ÉÏ´«µ½SFTP·şÎñÆ÷£º
-python WepLogs.py -f 172.22.80.205 -o 12039 -p 473385fc #ÉÏ´«µ½sftp·şÎñÆ÷Ä¬ÈÏ/tmpÄ¿Â¼
-python WepLogs.py -f 172.22.80.205 -o 12039 -p 473385fc -e /home/skyguardts/dlplogs #ÉÏ´«µ½sftp·şÎñÆ÷/home/skyguardts/dlplogsÄ¿Â¼
+7. æ”¶é›†æ—¥å¿—å¹¶ä¸Šä¼ åˆ°SFTPæœåŠ¡å™¨ï¼š
+python WepLogs.py -f 172.22.80.205 -o 12039 -p 473385fc #ä¸Šä¼ åˆ°sftpæœåŠ¡å™¨é»˜è®¤/tmpç›®å½•
+python WepLogs.py -f 172.22.80.205 -o 12039 -p 473385fc -e /home/skyguardts/dlplogs #ä¸Šä¼ åˆ°sftpæœåŠ¡å™¨/home/skyguardts/dlplogsç›®å½•
 
 WepLogs.exe -f 172.22.80.205 -o 12039 -p 473385fc -e /home/skyguardts/dlplogs
 
 WepLogs.exe  -l agent,sdk,hook,install,specify -s "C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile"  -f 172.22.80.205 -o 12039 -u skyguardts -p 473385fc -e /home/skyguardts/dlplogs
 
-×¢Òâ£º
-sftp¿ÉÄÜ»á³ö´í£º
-1£©ÍøÂçÁ¬½ÓÊ§°Ü£¬ÇëÈ·±£sftp·şÎñÆ÷ÍøÂç¿É´ïºÍ·şÎñÒÑÆô¶¯£ºparamiko.ssh_exception.SSHException: Unable to connect to 172.22.80.205: [WinError 10060] ÓÉÓÚÁ¬½Ó·½ÔÚÒ»¶ÎÊ±¼äºóÃ»ÓĞÕıÈ·´ğ¸´»òÁ¬½ÓµÄÖ÷»úÃ»ÓĞ·´Ó¦£¬Á¬½Ó³¢ÊÔÊ§°Ü¡£
-2£©Ä¿±êsftpÄ¿Â¼¿ÉÄÜÃ»ÓĞÈ¨ÏŞ£ºPermissionError: [Errno 13] Permission denied
-3) Windows´«Èë´ø¿Õ¸ñ²ÎÊıÊ±Ğè¼ÓÓ¢ÎÄË«ÒıºÅ""£¬ÇÒË«ÒıºÅÇ°Ãæ²»ÄÜÓĞ·´Ğ±¸Ü"\"-windowsÖĞ·´Ğ±¸Ü´ú±í×ªÒå£¬±ÈÈç£ºÕıÈ·µÄÂ·¾¶²ÎÊıÊÇ "C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile"£¬ ¶øÒÔÏÂÂ·¾¶²ÎÊıÊÇ´íÎóµÄ£º"C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile\"
-£¨Linux ÖĞµÄpython Ä¿Â¼±ØĞëÒÔĞ±¸Ü/½áÎ²£©
-4£©Îª±ÜÃâÂ·¾¶²ÎÊı³ö´í£¬Çë´«ÈëÄ¿Â¼×÷Îª²ÎÊıÊ±£¬×îºó×Ö·û¶¼²»ÒªÒÔ·´Ğ±¸Ü\»òĞ±¸Ü/½áÎ²¡£
+æ³¨æ„ï¼š
+sftpå¯èƒ½ä¼šå‡ºé”™ï¼š
+1ï¼‰ç½‘ç»œè¿æ¥å¤±è´¥ï¼Œè¯·ç¡®ä¿sftpæœåŠ¡å™¨ç½‘ç»œå¯è¾¾å’ŒæœåŠ¡å·²å¯åŠ¨ï¼šparamiko.ssh_exception.SSHException: Unable to connect to 172.22.80.205: [WinError 10060] ç”±äºè¿æ¥æ–¹åœ¨ä¸€æ®µæ—¶é—´åæ²¡æœ‰æ­£ç¡®ç­”å¤æˆ–è¿æ¥çš„ä¸»æœºæ²¡æœ‰ååº”ï¼Œè¿æ¥å°è¯•å¤±è´¥ã€‚
+2ï¼‰ç›®æ ‡sftpç›®å½•å¯èƒ½æ²¡æœ‰æƒé™ï¼šPermissionError: [Errno 13] Permission denied
+3) Windowsä¼ å…¥å¸¦ç©ºæ ¼å‚æ•°æ—¶éœ€åŠ è‹±æ–‡åŒå¼•å·""ï¼Œä¸”åŒå¼•å·å‰é¢ä¸èƒ½æœ‰åæ–œæ "\"-windowsä¸­åæ–œæ ä»£è¡¨è½¬ä¹‰ï¼Œæ¯”å¦‚ï¼šæ­£ç¡®çš„è·¯å¾„å‚æ•°æ˜¯ "C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile"ï¼Œ è€Œä»¥ä¸‹è·¯å¾„å‚æ•°æ˜¯é”™è¯¯çš„ï¼š"C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile\"
+ï¼ˆLinux ä¸­çš„python ç›®å½•å¿…é¡»ä»¥æ–œæ /ç»“å°¾ï¼‰
+4ï¼‰ä¸ºé¿å…è·¯å¾„å‚æ•°å‡ºé”™ï¼Œè¯·ä¼ å…¥ç›®å½•ä½œä¸ºå‚æ•°æ—¶ï¼Œæœ€åå­—ç¬¦éƒ½ä¸è¦ä»¥åæ–œæ \æˆ–æ–œæ /ç»“å°¾ã€‚
+5) todo
