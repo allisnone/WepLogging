@@ -72,6 +72,7 @@ def check_custom_user(datas, standard_columns,uniq_index=[0,1,2,3,9],department_
     for i in range(1,len(datas)):
         raw_user_datas = datas[i]
         user_list = raw_user_datas.replace('\n','').split(',')
+        print('user_list=',user_list)
         #检查每个用户的字段数是否足够
         if len(user_list)==columns_count:
             pass
@@ -86,7 +87,7 @@ def check_custom_user(datas, standard_columns,uniq_index=[0,1,2,3,9],department_
             j = uniq_index[k]
             value = user_list[j]
             print('i=%s k=%s j= %s value=%s'%(i,k,j,value))
-            print('uniq_list[%s]=%s' % (k,uniq_list[k]))
+            print('uniq_list[{0}]={1}'.format(k,uniq_list[k]))
             if value:
                 print('department_uuids=',department_uuids)
                 if department_uuids:#用户检查
