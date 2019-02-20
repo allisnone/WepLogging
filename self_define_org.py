@@ -79,9 +79,9 @@ def check_custom_user(datas, standard_columns,uniq_index=[0,1,2,3,9],department_
             print('ERROR-字段数不匹配： 第%s行，用户数据: %s' % (i, raw_user_datas))
             error_lines.append(user_list)
         #检查非空字段是否为空和唯一性字段是否唯一
-        if i>5:
-            pass
-            #break
+        if i>235:
+            #pass
+            break
         for k in range(0,uniq_count):
             j = uniq_index[k]
             value = user_list[j]
@@ -153,7 +153,7 @@ department_csv = 'department.csv'
 standard_department_csv = 'department0.csv'
 department_datas,department_standard_columns,is_healthy_department_headers = check_csv_head(department_csv,standard_csv_file=standard_department_csv)
 print('department_datas=',department_datas)
-department_uniq_list,error_department_lines = check_custom_user(department_datas, department_standard_columns,uniq_index=[0,1],department_uuids=[])
+department_uniq_list,error_department_lines = check_custom_user(department_datas, department_standard_columns,uniq_index=[0,1])
 department_uuids = department_uniq_list[0]
 print('department_uuids=',department_uniq_list)
 user_datas,user_standard_columns,is_healthy_user_headers = check_csv_head(custom_user_csv,standard_csv_file=standard_custom_user_csv)
