@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-def read_file(file='custom_user0.csv',encoding='utf-8',type='r'):
+def read_file(file='custom_user0.csv',encoding='utf-8-sig',type='r'):
     """
+    说明：如使用utf-8编码，文件的起始会出现：'\ufeff’ 字符，故使用utf-8-sig编码
     :param file: str
     :param encoding: str
     :param type: str
@@ -14,7 +15,7 @@ def read_file(file='custom_user0.csv',encoding='utf-8',type='r'):
         print('ERROR-读取文件{0}错误: {1}'.format(file,e))
     return lines
 
-def get_standard_template_colums(file='custom_user0.csv',encoding='utf-8'):
+def get_standard_template_colums(file='custom_user0.csv',encoding='utf-8-sig'):
     #['\ufeffuuid', 'commonName', 'mail', 'logonName', 'ip', 'enableManager', 'title', 'manager', 'telephone', 'department', 'departmentName\n']
     """
     :param file: str
@@ -147,34 +148,6 @@ def check_custom_user(datas, standard_columns,uniq_index=[0,1,2,3,9],department_
     #print('uniq_list=',uniq_list[0])        
     return uniq_list,error_lines
 
-def get_department_uuid(csv_file, standard_columns):
-    """
-    天空卫士自定义组织机构，检查department.csv 文件的有效性
-    :param csv_file: str, custom_user csv file
-    :param standard_columns: list, standard custom_user columns
-    :param department_uuids: list, valid department uuid list
-    :return: list, 有错误的用户数据
-    """
-    datas,is_healthy_header = check_csv_head(csv_file, standard_columns)
-    department_datas = read_file(file='department.csv')
-    department_uuids = ['1']
-    for i in range(1,len(department_datas)):
-        department_data = department_datas[i].split(',')
-        if department_data:
-            uuid = department_data[0]
-            parent_department_id = department_data[-1].replace('\n','')
-            #parent uuid必须先定义检测
-            if parent_department_id in department_uuids:
-                pass
-            else:
-                print('ERROR-上级部门必须先定义: 第%s行部门的parent_department_id=%s未定义，部门信息: %s' % (i+1, parent_department_id,department_datas[i]))
-            #uuid 重复性检查
-            if uuid not in department_uuids:
-                department_uuids.append(uuid)
-            else:
-                print('第%s行部门的uuid重复，重复的uuid: %s, 部门信息: %s' % (i+1, uuid,department_datas[i]))
-    return department_uuids
-
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='manual to this script') 
@@ -190,7 +163,7 @@ if __name__ == '__main__':
     standard_department_csv = 'department0.csv'
     print('----------------------------开始 %s 检查-------------------------' % department_csv)
     department_datas,department_standard_columns,is_healthy_department_headers = check_csv_head(department_csv,standard_csv_file=standard_department_csv)
-    #print('department_datas=',department_datas)
+    print('department_standard_columns=',department_standard_columns)
     department_uniq_list,error_department_lines = check_custom_user(department_datas, department_standard_columns,uniq_index=[0,1],depend_department_check=True)
     print('----------------------------结束 %s 检查-------------------------\n' % department_csv)
     print('----------------------------开始 %s 检查-------------------------' % custom_user_csv)
