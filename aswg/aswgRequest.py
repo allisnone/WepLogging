@@ -157,7 +157,8 @@ if __name__ == '__main__':
     print('测试结果位于： ', result_file )
     print('---------------------测试 %s 完成-------------------------------------------' % type )
     """URL测试使用方法"""
-    #python aswgRequest.py -t url -f ulrs.txt -p 172.18.230.23:8080 -o urls_result.csv
+    #python aswgRequest.py -t url -f urls.txt -p 172.18.230.23:8080 -o urls_result.csv
+    #python aswgRequest.py -t url -f urls.txt -p 172.18.200.240:8080 -o urls_result.csv
     """病毒测试使用方法，模拟http下载病毒"""
     #python aswgRequest.py -t virus -u http://www.sogaoqing.com/upload/VirusSamples/ -p 172.18.230.23:8080 -o virus_result.csv
     
