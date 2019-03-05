@@ -148,7 +148,6 @@ def check_custom_user(datas, standard_columns,uniq_index=[0,1,2,3,9],department_
             #print(uniq_list)
             pass
             #break
-    #print('bb')
     #print('uniq_list=',uniq_list[0])        
     return uniq_list,error_lines
 
