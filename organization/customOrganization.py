@@ -111,6 +111,10 @@ def check_custom_user(datas, standard_columns,uniq_index=[0,1,2,3,9],department_
             #print('kkkk')
             if value:
                 #print('department_uuids=',department_uuids)
+                temp_empty = value.replace(' ','').replace('    ','')
+                if not temp_empty:#替换空格或者tab健后为空字符
+                    print('ERROR-非空字段为空，第%s行，第%s字段%s为 空字符，用户数据：%s' % (i+1, j+1 , standard_columns[j], raw_user_datas))
+                    error_lines.append(user_list)
                 if department_uuids:#用户检查
                     if value in uniq_list[k] and standard_columns[j]!='department':
                         print('ERROR-custom_user唯一性字段不唯一，第%s行 ，重复字段 %s=%s， 用户数据: %s' %(i+1, standard_columns[j], value, raw_user_datas))
