@@ -125,17 +125,22 @@ class WepLogCollection:
                 'sdkdb': '%PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\cache\\',
                 'specify': ''
                 }
+        v22_datas = {
+                'agent': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\EndpointAgent\\var\\log\\',
+                'sdk': 'PROGRAMW6432_SkyGuard\SKGDLP\\ucscsdk\\var\\',
+                'hook': 'APPDATA_SKYLOG\\',
+                #C:\Users\admin\AppData\Local\Temp\EndpointInfo_ADMIN-PC_2,019_3_5_7_13
+                'install': 'TEMP_SkyDlpSetup.log',
+                'sdkdb': 'PROGRAMW6432_SkyGuard\\SKGDLP\\ucscsdk\\var\\cache\\',
+                'specify': ''
+                #PROGRAMW6432_SkyGuard\SKGDLP\\ucscsdk\\downloads\\
+                }  
         self.all_version_datas = {
             'v3.0.0': v23_datas,
             'v2.3.0': v23_datas,
-            'v2.2.0':{
-                'agent': 'PROGRAMW6432_SkyGuard\SkyGuard Endpoint\EndpointAgent\\var\\log\\',
-                'sdk': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\log\\',
-                'hook': 'APPDATA_SkyGuard\SkyGuard Endpoint\\var\\log\\',
-                'install': 'TEMP_EndpointInstaller.log',
-                'sdkdb': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\cache\\',
-                'specify': ''
-                },   
+            'v2.2.0': v22_datas,
+            'v2.1.0': v22_datas,
+            'v2.0.0': v22_datas,
             }
         if datas:
             self.all_version_datas = datas
@@ -235,6 +240,8 @@ class WepLogCollection:
         if not level:
             level = self.sdk_debug
         sdk_util = os.path.join(os.getenv('PROGRAMW6432'),'SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\bin\\ucsc_util.exe')
+        if self.ep_version<'v2.3':
+            sdk_util = os.path.join(os.getenv('PROGRAMW6432'),'SkyGuard\\SKGDLP\\ucscsdk\\bin\\ucsc_util.exe')
         is_swtich_successful = False
         if os.path.exists(sdk_util):
             if level.upper() in ['INFO', 'DEBUG', 'TRACE']:
