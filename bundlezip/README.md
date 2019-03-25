@@ -14,7 +14,7 @@
 partition_limit=0.9  #磁盘空间保护：已使用空间超过90%时不压缩证据
 
 4、 使用方法：
-
+将bundlezip.zip上传UCSS目录 /home/skyguardts， 后解压到当前目录
 1). 直接使用：python main.py
  默认不加任何参数时，相当于（不做日期过滤）：python main.py --unit-size=10G --forensics=network
 2). 加参数时，使用示例： python main.py --unit-size=5G --forensics=network --start-date=20181101 --end-date=20190115
@@ -24,6 +24,17 @@ partition_limit=0.9  #磁盘空间保护：已使用空间超过90%时不压缩证据
 	 cp -f bundle_tarfile.py bundle_tarfile_bak.py
    sed -i 's/tar.add/#tar.add/g' bundle_tarfile.py
    默认的原始证据目录和文件大小统计信息，记录文件如下： /tmp/network_forensics.txt
+5）. 使用示例：
+网络证据备份：
+python main.py --unit-size=10G --forensics=network --start-date=20181101 --end-date=20190320  > output_network_log.txt
+
+终端证据备份:
+python main.py --unit-size=10G --forensics=endpoint --start-date=20181101 --end-date=20190320  > output_endpoint_log.txt
+
+邮件证据备份：
+python main.py --unit-size=10G --forensics=email --start-date=20181101 --end-date=20190320  > output_email_log.txt
+
+
 
 
 
