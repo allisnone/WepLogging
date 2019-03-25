@@ -5,7 +5,8 @@ echo "\n开始使用awk脚本：默认证据类型是network,无时间过滤。\
 forensics="network"
 start_date=0
 end_date=0
-out_put=/tmp/forensics_all.txt
+out_put=/tmp/network_forensics.txt
+echo "du_awk.sh 脚本参数设置："
 while getopts ":f:s:e:o:" opt 
 do
 	case $opt in 
@@ -34,11 +35,13 @@ done
 
 
 dir=/var/skyguard/sps/forensics/incident/network/
-#日期证据的目录长度
-len=54
-#时间开始的index
+#时间开始的下标, len($dir)+1
 date_index=46
 
+#日期证据的目录长度-1: len($dir) + len(2019/03/23)-2
+#du -h max-depth=1 $dir | awk '{if(length($2)>54) {print $2;}}'
+#len=date_index+8
+len=54
 #基于给定的时间过滤
 #start_date=20181026
 #end_date=20181102
@@ -47,10 +50,15 @@ if [ "$forensics" = "endpoint" ]
 	then
 	#echo "endpoint"
 	dir=/var/skyguard/sps/forensics/incident/endpoint/
+	date_index=47
+	#du -h max-depth=1 $dir | awk '{if(length($2)>55) {print $2;}}'
+	len=53
 	elif [ "$forensics" = "email" ]
 	then
 	#echo "email"
 	dir=/var/skyguard/sps/forensics/email/
+	date_index=35
+	len=43
 	elif [ "$forensics" = "network" ]
 	then
 	echo "使用默认证据类型：network"
@@ -59,7 +67,11 @@ if [ "$forensics" = "endpoint" ]
 	exit 1
 fi
 
+#echo "date_index=$date_index"
+#echo "len=$len"
 echo "原始证据目录: $dir"
+echo "证据文件大小统计文件(du_awk.sh的输出结果): $out_put"
+
 #du -h max-depth=1 $dir | awk '{if(length($2)>11) {split(substr($2,3),a,"/");b=a[1]*10000+a[2]*100+a[3];print $1,$2,substr($2,3),b}}' | sort -t " " -k 4 -n > /tmp/forensics_all.txt
 # du -h max-depth=1 $dir | awk -v len="$len" -v date_index="$date_index" '{if(length($2)>len) {split(substr($2,date_index),a,"/");b=a[1]*10000+a[2]*100+a[3];print $1,$2,substr($2,date_index),b}}'
 

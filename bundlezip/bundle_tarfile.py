@@ -49,7 +49,7 @@ def is_enough_partition(additional_size='',rate=0.9,partition='/var'):
     else:
         return True
 
-def collect_du_result(cmd = 'sh du_awk.sh',forensics_type='network',start_date='18480101',end_date='18481229',out_put='forensics.txt'):
+def collect_du_result(cmd = 'sh du_awk.sh',forensics_type='network',start_date='18480101',end_date='18481229',out_put=''):
     #cmd= du -h max-depth=1 | awk '{if(length($2)>11) {split(substr($2,3),a,"/");b=a[1]*10000+a[2]*100+a[3];print $1,$2,substr($2,3),b}}' | sort -t " " -k 4 -n -r
     """
     通过shell脚本获取当前目录的文件和文件夹大小,返回/var分区的可用空间大小
@@ -67,11 +67,12 @@ def collect_du_result(cmd = 'sh du_awk.sh',forensics_type='network',start_date='
     else:
         print "End data empty, error or invalid!!!"
     out_file = out_put
-    if out_put!='forensics.txt':
+    if out_put:
         pass
     else:#默认将结果输出到/tmp目录
-        out_file = '/tmp/' + forensics_type + '_' + out_put
+        out_file = '/tmp/' + forensics_type + '_' + 'forensics.txt'
     cmd = cmd + ' -o ' + out_file
+    print 'cmd=' + cmd
     os.system(cmd)
     var_available_size_cmd = "df -k /var | awk 'END {print $4}'"
     var_available_size = os.popen(var_available_size_cmd).readlines()[0]
