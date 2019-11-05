@@ -9,11 +9,13 @@ if __name__ == '__main__':
     parser.add_argument('--start-date', type=int, default=18640101)
     parser.add_argument('--end-date', type=int, default=18640101)
     parser.add_argument('--unit-size', type=str, default='10G') 
+    parser.add_argument('--partition-limit', type=float, default=0.9)
     args = parser.parse_args()
     forensics_type = args.forensics
     start_date = args.start_date
     end_date = args.end_date
     unit_size = args.unit_size
+    partition_limit = args.partition_limit
     print '\n'
     print '---------------------Start 使用说明 --------------------------------'
     print '1. 直接使用：python main.py' 
@@ -37,7 +39,7 @@ if __name__ == '__main__':
     #du_result_file='forensics_all.txt'
     results = bundle_tarfile.get_du_result(du_result_file)
     #bundle_tarfile.bundle_tar_zip(results, start_date, end_date, unit_size,debug=True,rate=1.0)
-    partition_limit=0.9  #磁盘空间保护：已使用空间超过90%时不压缩证据
+    #partition_limit=0.9  #磁盘空间保护：已使用空间超过90%时不压缩证据
     bundle_tarfile.bundle_tar_zip(results,start_date,end_date,unit_size,forensics_type,debug=True,rate=1.0,huge_rate=1.5,buffer_rate=1.25,partition_limit_rate=partition_limit,partition='/var')
     print '---------------------请及时清理备份数据--------------------------------\n'
     print '!!!重要!!!\n!!!重要!!!\n!!!重要!!!\n请及时清理已压缩的证据文件，避免长期占用硬盘空间!!!'

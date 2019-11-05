@@ -63,9 +63,11 @@ def check_csv_head(csv_file,standard_csv_file='custom_user0.csv',standard_column
 def check_custom_user(datas, standard_columns,uniq_index=[0,1,2,3,9],department_uuids=[],depend_department_check=False):
     """
     天空卫士自定义组织机构，检查custom_user.csv 文件的有效性
-    :param csv_file: str, custom_user csv file
-    :param standard_columns: list, standard custom_user columns
+    :param datas: str, line data for custom_user or custom_computer
+    :param standard_columns: list, standard columns for reference: custom_user or custom_computer
+    :param uniq_index: list, the column should be unique
     :param department_uuids: list, valid department uuid list
+    :param end_department_check, bool , default False
     :return: list, 有错误的用户数据
     """
     columns_count = len(standard_columns)
@@ -99,6 +101,9 @@ def check_custom_user(datas, standard_columns,uniq_index=[0,1,2,3,9],department_
             else:
                 print('ERROR-department上级部门ID=%s未定义，第%s行 ，用户数据: %s' % (depend_department_id, i+1, raw_user_datas))
         if this_len==columns_count:
+            if this_len==11 and user_list[0]==user_list[7]:
+                print('ERROR-主管不能是自己ID=%s，第%s行 ，用户数据: %s' % (user_list[0], i+1, raw_user_datas))
+            #检查用户ID和主管ID是否一样，主管不能是自己
             pass
         else:
             print('ERROR-字段数不匹配-总共%s个字段，要求%s个字段： 第%s行，用户数据: %s' % (this_len,columns_count,i+1, raw_user_datas))
@@ -152,32 +157,4 @@ def check_custom_user(datas, standard_columns,uniq_index=[0,1,2,3,9],department_
             #break
     #print('uniq_list=',uniq_list[0])        
     return uniq_list,error_lines
-
-if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser(description='manual to this script, 当前主要用户部门和用户的检查。') 
-    parser.add_argument('-d','--department-csv', type=str, default = 'department.csv',help='指定需收集日志的终端的版本，格式如v2.3.0') 
-    parser.add_argument('-u','--custom-user-csv', type=str, default= 'custom_user.csv',help='收集终端模块的日志类型')
-    parser.add_argument('-c','--computer-csv', type=str, default= 'computer.csv',help='收集终端模块的日志类型')
-    args = parser.parse_args()
-    custom_user_csv = args.custom_user_csv
-    #custom_user_csv = 'custom_user.csv'
-    standard_custom_user_csv ='custom_user0.csv'
-    department_csv = args.department_csv
-    #department_csv = 'department.csv'
-    standard_department_csv = 'department0.csv'
-    print('----------------------------开始 %s 检查-------------------------' % department_csv)
-    department_datas,department_standard_columns,is_healthy_department_headers = check_csv_head(department_csv,standard_csv_file=standard_department_csv)
-    print('department_standard_columns=',department_standard_columns)
-    department_uniq_list,error_department_lines = check_custom_user(department_datas, department_standard_columns,uniq_index=[0,1],depend_department_check=True)
-    print('----------------------------结束 %s 检查-------------------------\n' % department_csv)
-    print('----------------------------开始 %s 检查-------------------------' % custom_user_csv)
-    department_ids = department_uniq_list[0]
-    #print('department_ids=',department_ids)
-    user_datas,user_standard_columns,is_healthy_user_headers = check_csv_head(custom_user_csv,standard_csv_file=standard_custom_user_csv)
-    user_uniq_list,error_user_lines = check_custom_user(user_datas, user_standard_columns,uniq_index=[0,1,2,3,9],department_uuids=department_ids)
-    print('----------------------------结束 %s 检查-------------------------' % custom_user_csv)
-    print('----------------------------TODO: computer.csv检查-------------------------')
-    print('----------------------------注意事项：-------------------------')
-    print('当前未做特殊字符的检查，为避免使用非法字符，请尽量只使用: 英文字母、数字，中文，下线"_", 中横线"- "字符。')
     

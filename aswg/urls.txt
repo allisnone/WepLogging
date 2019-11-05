@@ -1,3 +1,5 @@
+http://infected.cepera.ru
+http://infected.cepera.ru
 https://cas.klmyedu.cn/cas/jquery-1.11.1.min.js
 https://cas.klmyedu.cn/cas/js/head.min.js
 https://cas.klmyedu.cn/cas/themes/apereo/js/cas.js

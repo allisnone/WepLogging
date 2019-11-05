@@ -1,2 +1,0 @@
-﻿uuid,commonName,mail,logonName,ip,enableManager,title,manager,telephone,department,departmentName
-1,username,a@skyguard.com,commonname,172.20.1.1,TRUE,manager,1(主管用户的uuid),13111111111,1（部门的id）,开发部

@@ -20,6 +20,7 @@ class WepLogCollection:
         self.valid_versions = ['v2.3,.0', 'v2.2.0']
         self.log_dir_data = {}
         self.output_logs = ''
+        self.is_win64 = 'PROGRAMFILES(X86)' in os.environ
         self.initial_dlp_logs(types,specify,debug)
         
     def initial_dlp_logs(self,types,specify,debug):
@@ -32,6 +33,13 @@ class WepLogCollection:
             self.set_sdklog_level(debug)
             self.restore_log_level()
         return    
+    
+    def get_os_programfiles(self):
+        #is_64_windows = 'PROGRAMFILES(X86)' in os.environ
+        if self.is_win64:
+            return os.environ['PROGRAMW6432']
+        else:
+            return os.environ['PROGRAMFILES']
     
     def get_agent_version(self): 
         return       
@@ -79,8 +87,8 @@ class WepLogCollection:
         设置要收集的日志类型，如果需要收集特殊日志或者配置文件，参数specify必须非空
         :parama types: str or list type
         """
-        valid_log_types = ['agent','sdk','hook','install','specify']
-        default_type_list = ['agent','sdk','install']
+        valid_log_types = ['agent','sdk','hook','install','profile','specify']
+        default_type_list = ['agent','sdk','install','profile']
         if types:
             pass
         else:#默认只取agent和sdk的日志
@@ -122,8 +130,9 @@ class WepLogCollection:
                 'sdk': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\log\\',
                 'hook': 'APPDATA_SkyGuard\SkyGuard Endpoint\\var\\log\\',
                 'install': 'TEMP_EndpointInstaller.log',
-                'sdkdb': '%PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\cache\\',
-                'specify': ''
+                'sdkdb': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\var\\cache\\',
+                'profile': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\downloads\\ep_profile\\',
+                'specify': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\\UCSCSDK\\downloads'#\\ep_profile\\'
                 }
         v22_datas = {
                 'agent': 'PROGRAMW6432_SkyGuard\\SkyGuard Endpoint\EndpointAgent\\var\\log\\',
@@ -132,7 +141,8 @@ class WepLogCollection:
                 #C:\Users\admin\AppData\Local\Temp\EndpointInfo_ADMIN-PC_2,019_3_5_7_13
                 'install': 'TEMP_SkyDlpSetup.log',
                 'sdkdb': 'PROGRAMW6432_SkyGuard\\SKGDLP\\ucscsdk\\var\\cache\\',
-                'specify': ''
+                'profile': 'PROGRAMW6432_SkyGuard\SKGDLP\\ucscsdk\\downloads\\ep_profile\\',
+                'specify': 'PROGRAMW6432_SkyGuard\SKGDLP\\ucscsdk\\downloads'#\\ep_profile\\'
                 #PROGRAMW6432_SkyGuard\SKGDLP\\ucscsdk\\downloads\\
                 }  
         self.all_version_datas = {
@@ -201,12 +211,13 @@ class WepLogCollection:
             log_dir_data = {k: v for k, v in log_dir_data.items() if v}
             log_dirs = []
             for k, v in log_dir_data.items():
-                log_dirs.append(v)
+                #log_dirs.append(v)
                 if k =='install':
                     log_dirs.append('TEMP_EndpointInstaller1.log')
                     log_dirs.append('TEMP_EndpointInstaller2.log')
                 else:
-                    pass
+                    if v:
+                        log_dirs.append(v)
             #log_dirs = [v for k, v in log_dir_data.items() if v]
             profix_dirs = ['PROGRAMW6432_','APPDATA_','TEMP_']
             for dir in log_dirs:
@@ -215,7 +226,12 @@ class WepLogCollection:
                     if profix in dir:
                         dirs = dir.split('_')
                         is_spectial_head = True
-                        this_dir = os.path.join(os.getenv(dirs[0]),dirs[1])
+                        programfiles_dir = dirs[0]
+                        if not self.is_win64 and programfiles_dir=='PROGRAMW6432': #win32位特殊处理programfiles
+                            programfiles_dir = 'PROGRAMFILES'
+                        this_dir = os.path.join(os.getenv(programfiles_dir),dirs[1])
+                        if 'downloads\ep' in this_dir:
+                            this_dir = os.path.join(this_dir[:-2],'ep_profile')
                         if this_dir and os.path.exists(this_dir):
                             tar_obj.add(this_dir) 
                             break
@@ -385,4 +401,5 @@ if __name__ == '__main__':
         pass
     #wep_log_obj.tar_dlp_log_files()
     #wep_log_obj.set_sdklog_level(level='INFO')
+    #a = (|(sAMAccountName='abc1')(sAMAccountName='abc2')(sAMAccountName='abc3')(sAMAccountName='abc4'))
     

@@ -202,9 +202,9 @@ def tar_huge_dir(dest_dir, limit_size='10G',huge_rate=1.5,keyword='network',tar_
         print 'total_tar_count=',total_tar_count
         ls_file_cmd = "ls -altr %s | grep '^-' | awk '{print $5,$9}'" % this_dir
         all_file_info = os.popen(ls_file_cmd).readlines()
-        tar_file_name = keyword +'_'  + date_str + '_%s.tar.gz'%name_count
+        tar_file_name = keyword +'_'  + date_str + '_%s.tar'%name_count
         full_tar_file_name = os.path.join(dest_tar_dir,tar_file_name)
-        tar = tarfile.open(full_tar_file_name,'w:gz')
+        tar = tarfile.open(full_tar_file_name,'w')
         i = 0
         for info in all_file_info:
             file_info = info.replace('\n','').split(' ')
@@ -218,9 +218,9 @@ def tar_huge_dir(dest_dir, limit_size='10G',huge_rate=1.5,keyword='network',tar_
                     print '-----------------------------------------'
                     name_count = name_count + 1
                     tar_count = tar_count + 1
-                    tar_file_name = keyword +'_'  + date_str + '_%s.tar.gz'%name_count
+                    tar_file_name = keyword +'_'  + date_str + '_%s.tar'%name_count
                     full_tar_file_name = os.path.join(dest_tar_dir,tar_file_name)
-                    tar = tarfile.open(full_tar_file_name,'w:gz')
+                    tar = tarfile.open(full_tar_file_name,'w')
                     temp_size = file_size
                 else:#继续累加，添加文件到压缩包
                     temp_size = temp_size + file_size
@@ -256,12 +256,12 @@ def tar_and_zip_dirs(target_dirs,keyword='network',tar_cout=0,addition_size=0,ra
         print '压缩模板DIR为空，退出压缩'
         return -1
     elif len(target_dirs)==1:
-        tar_file_name = keyword +'_'  + target_dirs[0][3] + '.tar.gz'
+        tar_file_name = keyword +'_'  + target_dirs[0][3] + '.tar'
     else:
-        tar_file_name = keyword +'_'  + target_dirs[0][3] +'_' + target_dirs[-1][3] + '.tar.gz'
+        tar_file_name = keyword +'_'  + target_dirs[0][3] +'_' + target_dirs[-1][3] + '.tar'
     full_tar_file_name = os.path.join(dest_tar_dir,tar_file_name)
     if tar_cout>=0: print 'start： tar_cout=%s, target tar file: ' % tar_cout + full_tar_file_name
-    tar=tarfile.open(full_tar_file_name,'w:gz')
+    tar=tarfile.open(full_tar_file_name,'w')
     for target in target_dirs:
         if len(target)!=4:
             print '目标元素出错： %s' % target

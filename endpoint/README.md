@@ -26,14 +26,17 @@ set PYTHONIOENCODING=utf-8
 
 
 WepLogs.exe 使用方法:
-1. 获取终端的主要默认日志，包括agent 和 sdk 日志: 直接双击exe文件，或者不加参数直接命令行运行, 日志压缩包位于桌面。有效应用的日志包括：
+1. 获取终端的主要默认日志，包括agent,sdk,install,specify日志: 直接双击exe文件，或者不加参数直接命令行运行, 日志压缩包位于桌面。有效应用的日志包括：
 ['agent','sdk','hook','install','specify']
+默认不带任何参数： 
 WepLogs.exe 
 or WepLogs.exe  -l default
+相当于： WepLogs.exe  -l agent,sdk,install,specify -s "C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile"
+默认收集安装日志、agent日志，sdk日志和终端当前配置
 2. 获取全部终端日志，包括 ['agent','sdk','hook','install']
 WepLogs.exe  -l all
 相当于：
-WepLogs.exe  -l agent,sdk,hook,install 
+WepLogs.exe  -l agent,sdk,hook,install,specify 
 
 3. 获取多个日志：
 WepLogs.exe  -l sdk,hook
@@ -72,4 +75,5 @@ sftp可能会出错：
 3) Windows传入带空格参数时需加英文双引号""，且双引号前面不能有反斜杠"\"-windows中反斜杠代表转义，比如：正确的路径参数是 "C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile"， 而以下路径参数是错误的："C:\Program Files\SkyGuard\SkyGuard Endpoint\UCSCSDK\downloads\ep_profile\"
 （Linux 中的python 目录必须以斜杠/结尾）
 4）为避免路径参数出错，请传入目录作为参数时，最后字符都不要以反斜杠\或斜杠/结尾。
-5) todo
+5) pip install pyinstaller; pip install pyQt5;pip install paramiko
+6）todo
